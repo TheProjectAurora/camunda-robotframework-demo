@@ -26,6 +26,9 @@ services:
       dockerfile: Dockerfile
     entrypoint: ["/usr/local/bin/python"]
     command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
+    volumes:
+      - ./infra/camunda-gmail-worker/config/token.json:/app/token.json
+      - ./infra/camunda-gmail-worker/config/credentials.json:/app/credentials.json
 
   robotframework:
     build:
