@@ -1,6 +1,6 @@
 version: '2'
 services:
-  gocd-server:
+  camunda:
     build:
       context: ./infra/camunda
       dockerfile: Dockerfile
@@ -11,8 +11,23 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     #environment:
     #  - GITREPO="https://github.com/TheProjectAurora/gocd-katas.git"
+  camunda-rf-worker:
+    build:
+      context: ./infra/camunda-rf-worker
+      dockerfile: Dockerfile
+    volumes:
+      - ./infra/camunda/camunda-rf-worker/CamundaRFWorker.py:/app/CamundaRFWorker.py
+    command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
+  camunda-gmail-worker:
+    build:
+      context: ./infra/camunda-gmail-worker
+      dockerfile: Dockerfile
+    volumes:
+      - ./infra/camunda/camunda-gmail-worker/CamundaGMAILWorker.py:/app/CamundaGMAILWorker.py
+    command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
 
   robotframework:
     build:
       context: ./infra/robotframework
       dockerfile: Dockerfile
+    

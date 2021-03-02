@@ -1,4 +1,7 @@
-FROM gocd/gocd-server:v21.1.0
-USER root
-# DO ACTIONS HERE
-USER go
+FROM python:3-alpine
+RUN set -xe && \
+    apk upgrade --no-cache && \
+    apk add --no-cache \
+        nodejs
+    pip3  install --no-cache-dir -r requirements.txt && \
+    rfbrowser init
