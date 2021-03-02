@@ -1,0 +1,18 @@
+version: '2'
+services:
+  gocd-server:
+    build:
+      context: ./infra/camunda
+      dockerfile: Dockerfile
+    ports:
+      - 80:8080
+    volumes:
+      - ./infra/camunda/config/camunda_initialise.sh:/docker-entrypoint.d/camunda_initialise.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+    #environment:
+    #  - GITREPO="https://github.com/TheProjectAurora/gocd-katas.git"
+
+  robotframework:
+    build:
+      context: ./infra/robotframework
+      dockerfile: Dockerfile
