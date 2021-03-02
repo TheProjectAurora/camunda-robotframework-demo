@@ -30,4 +30,5 @@ services:
     build:
       context: ./infra/robotframework
       dockerfile: Dockerfile
+    entrypoint: ["/dev/null"]
     
