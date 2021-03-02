@@ -1,0 +1,2 @@
+camunda-external-task-client-python3
+requests
