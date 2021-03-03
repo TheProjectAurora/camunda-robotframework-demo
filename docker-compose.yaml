@@ -12,7 +12,7 @@ services:
     #environment:
     #  - GITREPO="https://github.com/TheProjectAurora/gocd-katas.git"
 
-  camunda-modeler:
+  camunda-modeler-push:
     build:
       context: ./infra/camunda-model-push
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
       - camunda
     entrypoint: /wait-for-it/wait-for-it.sh camunda:8080 -- /usr/bin/curl -X POST -F "upload=@/model/camunda_rf_demo.bpmn" http://camunda:8080/engine-rest/deployment/create
     volumes:
-      - ./infra/camunda-modeler/config/:/model/
+      - ./infra/camunda-model-push/model/:/model/
 
   camunda-gmail-worker:
     build:
