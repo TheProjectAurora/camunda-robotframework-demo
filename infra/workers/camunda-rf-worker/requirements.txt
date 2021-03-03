@@ -1,4 +1,6 @@
 camunda-external-task-client-python3
+google-api-python-client
+oauth2client
 requests
 frozendict
 robotframework

@@ -7,9 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 80:8080
-    volumes:
-      - ./infra/camunda/config/camunda_initialise.sh:/docker-entrypoint.d/camunda_initialise.sh
-      - /var/run/docker.sock:/var/run/docker.sock
+    #volumes:
+    #  - ./infra/camunda/config/camunda_initialise.sh:/docker-entrypoint.d/camunda_initialise.sh
     #environment:
     #  - GITREPO="https://github.com/TheProjectAurora/gocd-katas.git"
 
@@ -19,9 +18,6 @@ services:
       dockerfile: Dockerfile-Gmail-Worker
     entrypoint: ["/usr/local/bin/python"]
     command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
-    volumes:
-      - ./infra/workers/token.json:/app/token.json
-      - ./infra/workers/credentials.json:/app/credentials.json
 
   camunda-rf-worker:
     build:
@@ -29,6 +25,8 @@ services:
       dockerfile: Dockerfile-RF-Worker
     entrypoint: ["/usr/local/bin/python"]
     command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   robotframework:
     build:
