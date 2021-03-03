@@ -1,10 +1,14 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from camunda.external_task.external_task_worker import ExternalTaskWorker
-import CamundaGMAILWorker as g
 import robot
 import requests
 import sys
 import time
+try:
+    import libraries.GmailLib as g
+except Exception as e:
+    print(f"Error when importing GmailLib:{e}")
+
 
 class CamundaRFWorker:
 
@@ -13,6 +17,7 @@ class CamundaRFWorker:
         self.robot_file = "CamundaDemoTasks.robot"
         self.worker_id = "1"
         self.camunda_url = camunda_url
+        self.gmail = g.GmailLib()
         self.default_config = {
             "maxTasks": 1,
             "lockDuration": 10000,
@@ -29,14 +34,24 @@ class CamundaRFWorker:
         to report status of task to Camunda
         """
         topic = task.get_topic_name()
-        taskId = task.get_task_id()
+        task_id = task.get_task_id()
         if topic in ("search_duck","search_bing"):
-            logFile = open(topic+"_"+taskId+".txt", "w")
-            self._release_task(taskId)
-            robot_run = robot.run(self.robot_file,variable="topic:"+topic,include=[topic],stdout=logFile,report=topic+"_"+taskId+".html")
-            self._print_info_to_console(logFile.name)
+            print(f"Start robot framework task: {topic}")
+            try:
+                logFile = open(topic+"_"+task_id+".txt", "w")
+                self._release_task(task_id)
+                robot_run = robot.run(self.robot_file,variable="topic:"+topic,include=[topic],stdout=logFile,report=topic+"_"+task_id+".html")
+                self._print_info_to_console(logFile.name)
+            except Exception as e:
+                print(f"Could not complete robot framework task: {e}")
         else:
-            self._send_results_email_task(task)
+            try:
+                print(f"Start task: {topic}")
+                self._send_results_email_task(task)
+            except Exception as e:
+                print(f"Could not complete task: {e}")
+                return task.failure(error_message="task failed",  error_details=str(e))
+            print(f"Task completed: {topic}")
             return task.complete({"results_sent": True})
         return None
 
@@ -47,25 +62,24 @@ class CamundaRFWorker:
         search_term = task.get_variable("search_term")
         message_text ='''
         <p> Bing: {bing}</p>
-        <p> DuckDuckGo: {duck}</p><br/>BR,<br/>Jaska'''.format(bing=result_bing,duck=result_duck)
+        <p> DuckDuckGo: {duck}</p><br/>BR,<br/>N<>rthC<>de'''.format(bing=result_bing,duck=result_duck)
         try:
-            g.GmailCamunda().send_email(sender, "Search results for "+search_term, message_text)
-        except Exception as ex:
-            print("Could not send results: "+str(ex))
+            self.gmail.send_email(sender, "Search results for "+search_term, message_text)
+        except Exception as e:
+            print(f"Could not send results: {e}")
 
     def _release_task(self,id):
         """
         Release external task. Task is locked again by Robot framework
-
         """
         try:
             url = self.camunda_url+"/engine-rest/external-task/"+id+"/unlock"
             headers = {"Content-type": "application/json"}
             r = requests.post(url, headers=headers)
             r.raise_for_status()
-            print("Task released:"+id)
-        except Exception as ex:
-            print("Could not release task: "+str(ex))
+            print(f"Task released: {id}")
+        except Exception as e:
+            print(f"Could not release task: {e}")
 
     def _print_info_to_console(self,log_file):
         with open(log_file, "r", encoding="utf8") as read_obj:
@@ -76,6 +90,6 @@ class CamundaRFWorker:
         return None
 
 if __name__ == '__main__':
-    print("Camunda url:"+sys.argv[1])
+    print(f"Camunda url: {sys.argv[1]}")
     t = CamundaRFWorker(sys.argv[1])
     ExternalTaskWorker(config=t.default_config,worker_id=t.worker_id).subscribe(t.topics_to_subscribe, t.handle_task)

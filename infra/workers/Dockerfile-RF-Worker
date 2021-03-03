@@ -1,0 +1,7 @@
+FROM python:3-alpine
+COPY ./libraries/CamundaRFWorker.py /app/CamundaRFWorker.py
+COPY ./camunda-rf-worker/requirements.txt /tmp/requirements.txt
+COPY ./camunda-rf-worker/GmailLib.py /app/GmailLib.py
+RUN set -xe && \
+    chmod +x /app/CamundaRFWorker.py && \
+    pip3 install install -r /tmp/requirements.txt
