@@ -23,6 +23,8 @@ services:
       - ./infra/camunda-model-push/model/:/model/
 
   camunda-gmail-worker:
+    environment:
+      - PYTHONUNBUFFERED=1
     build:
       context: ./infra/workers
       dockerfile: Dockerfile-Gmail-Worker
@@ -32,6 +34,8 @@ services:
       - ./infra/workers/credentials/:/app/credentials/
 
   camunda-rf-worker:
+    environment:
+      - PYTHONUNBUFFERED=1
     build:
       context: ./infra/workers
       dockerfile: Dockerfile-RF-Worker
