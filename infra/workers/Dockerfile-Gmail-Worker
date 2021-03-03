@@ -1,6 +1,5 @@
 FROM python:3-alpine
 COPY ./libraries /app/libraries
-COPY ./*.json /app/
 COPY ./camunda-gmail-worker/CamundaGMAILWorker.py /app
 COPY ./camunda-gmail-worker/requirements.txt /tmp
 RUN set -xe && \

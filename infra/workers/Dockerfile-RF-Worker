@@ -1,6 +1,5 @@
 FROM python:3-alpine
 COPY ./libraries /app/libraries
-COPY ./*.json /app/
 COPY ./camunda-rf-worker/requirements.txt /tmp
 COPY ./camunda-rf-worker/CamundaRFWorker.py /app
 RUN set -xe && \

@@ -28,6 +28,8 @@ services:
       dockerfile: Dockerfile-Gmail-Worker
     entrypoint: ["/usr/local/bin/python"]
     command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
+    volumes:
+      - ./infra/workers/credentials/:/app/credentials/
 
   camunda-rf-worker:
     build:
@@ -37,6 +39,7 @@ services:
     command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./infra/workers/credentials/:/app/credentials/
 
   robotframework:
     build:

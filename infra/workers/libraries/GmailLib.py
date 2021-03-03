@@ -11,9 +11,9 @@ class GmailLib:
 
     def __init__(self,token=None,creds=None):
         try:
-            creds = file.Storage("/app/token.json").get()
+            creds = file.Storage("/app/credentials/token.json").get()
             if not creds or creds.invalid:
-                flow = client.flow_from_clientsecrets("/app/credentials.json", SCOPES)
+                flow = client.flow_from_clientsecrets("/app/credentials/credentials.json", SCOPES)
                 creds = tools.run_flow(flow, store)
             self.service = build("gmail", "v1", http=creds.authorize(Http()))
         except Exception as e:
