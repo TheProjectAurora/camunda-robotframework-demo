@@ -30,7 +30,7 @@ class CamundaGMAILWorker:
                 time.sleep(10)
             else:
                 for msg in messages:
-                    msg = self.gmail.fetch_unread_messages(msg["id"])
+                    msg = self.gmail.get_message(msg["id"])
                     email_valid = self._check_email_subject_and_sender(msg)
                     if email_valid:
                         self._send_message_to_camunda_engine(self.sender_email, self.subject, self.search_term)
