@@ -12,13 +12,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     #environment:
     #  - GITREPO="https://github.com/TheProjectAurora/gocd-katas.git"
- 
-  camunda-rf-worker:
-    build:
-      context: ./infra/workers
-      dockerfile: Dockerfile-RF-Worker
-    entrypoint: ["/usr/local/bin/python"]
-    command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
 
   camunda-gmail-worker:
     build:
@@ -29,6 +22,13 @@ services:
     volumes:
       - ./infra/workers/token.json:/app/token.json
       - ./infra/workers/credentials.json:/app/credentials.json
+
+  camunda-rf-worker:
+    build:
+      context: ./infra/workers
+      dockerfile: Dockerfile-RF-Worker
+    entrypoint: ["/usr/local/bin/python"]
+    command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
 
   robotframework:
     build:

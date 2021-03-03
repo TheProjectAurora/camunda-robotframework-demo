@@ -1,7 +1,7 @@
 FROM python:3-alpine
+COPY ./libraries /app/libraries
 COPY ./camunda-gmail-worker/CamundaGMAILWorker.py /app/CamundaGMAILWorker.py
 COPY ./camunda-gmail-worker/requirements.txt /tmp/requirements.txt
-COPY ./camunda-rf-worker/GmailLib.py /app/GmailLib.py
 RUN set -xe && \
     chmod +x /app/CamundaGMAILWorker.py && \
     pip3 install install -r /tmp/requirements.txt
