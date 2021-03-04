@@ -7,10 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 80:8080
-    #volumes:
-    #  - ./infra/camunda/config/camunda_initialise.sh:/docker-entrypoint.d/camunda_initialise.sh
-    #environment:
-    #  - GITREPO="https://github.com/TheProjectAurora/gocd-katas.git"
+
 
   camunda-modeler-push:
     build:
@@ -23,6 +20,8 @@ services:
       - ./infra/camunda-model-push/model/:/model/
 
   camunda-gmail-worker:
+    environment:
+      - PYTHONUNBUFFERED=1
     build:
       context: ./infra/workers
       dockerfile: Dockerfile-Gmail-Worker
@@ -32,6 +31,8 @@ services:
       - ./infra/workers/credentials/:/app/credentials/
 
   camunda-rf-worker:
+    environment:
+      - PYTHONUNBUFFERED=1
     build:
       context: ./infra/workers
       dockerfile: Dockerfile-RF-Worker
