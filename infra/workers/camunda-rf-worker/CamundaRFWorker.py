@@ -4,6 +4,7 @@ import robot
 import requests
 import sys
 import time
+import docker
 try:
     import libraries.GmailLib as g
 except Exception as e:
@@ -18,6 +19,7 @@ class CamundaRFWorker:
         self.worker_id = "1"
         self.camunda_url = camunda_url
         self.gmail = g.GmailLib()
+        self.docker_client = docker.from_env()
         self.default_config = {
             "maxTasks": 1,
             "lockDuration": 10000,
@@ -40,8 +42,10 @@ class CamundaRFWorker:
             try:
                 logFile = open(topic+"_"+task_id+".txt", "w")
                 self._release_task(task_id)
-                robot_run = robot.run(self.robot_file,variable="topic:"+topic,include=[topic],stdout=logFile,report=topic+"_"+task_id+".html")
-                self._print_info_to_console(logFile.name)
+                x = self.docker_client.containers.run("camunda-robotframework-demo_robotframework:latest",command="robot /tmp")
+                print(x)
+                #robot_run = robot.run(self.robot_file,variable="topic:"+topic,include=[topic],stdout=logFile,report=topic+"_"+task_id+".html")
+                #self._print_info_to_console(logFile.name)
             except Exception as e:
                 print(f"Could not complete robot framework task: {e}")
         else:
@@ -92,4 +96,4 @@ class CamundaRFWorker:
 if __name__ == '__main__':
     print(f"Camunda url: {sys.argv[1]}")
     t = CamundaRFWorker(sys.argv[1])
-    ExternalTaskWorker(config=t.default_config,worker_id=t.worker_id).subscribe(t.topics_to_subscribe, t.handle_task)
+    ExternalTaskWorker(base_url=sys.argv[1]+"/engine-rest",config=t.default_config,worker_id=t.worker_id).subscribe(t.topics_to_subscribe, t.handle_task)

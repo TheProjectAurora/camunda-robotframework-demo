@@ -3,6 +3,7 @@ import requests
 import sys
 import json
 import time
+import traceback
 try:
     import libraries.GmailLib as g
 except Exception as e:
@@ -24,8 +25,7 @@ class CamundaGMAILWorker:
         start process and marks email as read.
         """
         try:
-            results = self.gmail.fetch_unread_messages()
-            messages = results.get("messages", [])
+            messages = self.gmail.fetch_unread_messages()
             if not messages:
                 time.sleep(10)
             else:
@@ -38,6 +38,7 @@ class CamundaGMAILWorker:
             return None
         except Exception as e:
             print(f"Error when checking inbox messages:{e}")
+            traceback.print_exc()
 
     def _send_message_to_camunda_engine(self, sender, subject, search_term):
         """
@@ -74,7 +75,7 @@ class CamundaGMAILWorker:
             self.search_term = msg["snippet"]
             self.subject = subject
             self.sender_email = email
-            print(f"Got {self.subject_to_look} mail from {self.sender_email_to_look}! Search term: {search_term}")
+            print(f"Got {self.subject_to_look} mail from {self.sender_email_to_look}! Search term: {self.search_term}")
             return True
         return False
 

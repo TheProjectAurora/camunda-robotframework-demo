@@ -4,6 +4,7 @@ from httplib2 import Http
 from email.mime.text import MIMEText
 from apiclient import errors, discovery
 import base64
+import sys
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
@@ -18,15 +19,17 @@ class GmailLib:
             self.service = build("gmail", "v1", http=creds.authorize(Http()))
         except Exception as e:
             print(f"Error when initializing service:{e}")
+            sys.exit(1)
 
     def fetch_unread_messages(self):
+        messages = None
         try:
-            results = self.service.users().messages().list(userId="me",labelIds = ["INBOX","UNREAD"]).execute()
-            if len(results) > 0:
+            messages = self.service.users().messages().list(userId="me",labelIds = ["INBOX","UNREAD"]).execute().get("messages", [])
+            if len(messages) > 0:
                 print(f"Messages found!")
         except Exception as e:
             print(f"Could not fetch messages: {e}")
-        return results
+        return messages
 
     def get_message(self, msg_id):
         try:
