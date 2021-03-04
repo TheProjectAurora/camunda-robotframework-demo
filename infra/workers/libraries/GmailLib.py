@@ -6,9 +6,10 @@ from apiclient import errors, discovery
 import base64
 import sys
 
-SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
 class GmailLib:
+
+    SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
     def __init__(self,token=None,creds=None):
         try:
@@ -50,7 +51,7 @@ class GmailLib:
         try:
             r = self.service.users().messages().modify(userId="me", id=message_id, body={"removeLabelIds": ["UNREAD"]}).execute()
             print(f"Email marked as read: {message_id}\n{r}")
-        except errors.HttpError as error:
+        except errors.HttpError as error:   
             print(f"Could not mark email as read: {message_id}\n{error}")
 
     def _create_message(self, to, subject, message_text):

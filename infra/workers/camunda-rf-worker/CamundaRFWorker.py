@@ -5,6 +5,7 @@ import requests
 import sys
 import time
 import docker
+import traceback
 try:
     import libraries.GmailLib as g
 except Exception as e:
@@ -42,12 +43,12 @@ class CamundaRFWorker:
             try:
                 logFile = open(topic+"_"+task_id+".txt", "w")
                 self._release_task(task_id)
-                x = self.docker_client.containers.run("camunda-robotframework-demo_robotframework:latest",command="robot /tmp")
-                print(x)
+                self.docker_client.containers.run("camunda-robotframework-demo_robotframework:latest",network="camunda-robotframework-demo_default",command="robot -d /tmp -v TOPIC:"+topic+" -v CAMUNDA_HOST:"+self.camunda_url+" /tmp")
                 #robot_run = robot.run(self.robot_file,variable="topic:"+topic,include=[topic],stdout=logFile,report=topic+"_"+task_id+".html")
                 #self._print_info_to_console(logFile.name)
             except Exception as e:
                 print(f"Could not complete robot framework task: {e}")
+                traceback.print_exc()
         else:
             try:
                 print(f"Start task: {topic}")
