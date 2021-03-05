@@ -1,4 +1,4 @@
-camunda-external-task-client-python3
+camunda-external-task-client-python3==3.0.0
 google-api-python-client
 oauth2client
 requests

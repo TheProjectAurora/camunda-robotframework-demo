@@ -26,16 +26,12 @@ class CamundaGMAILWorker:
         """
         try:
             messages = self.gmail.fetch_unread_messages()
-            if not messages:
-                time.sleep(10)
-            else:
-                for msg in messages:
-                    msg = self.gmail.get_message(msg["id"])
-                    email_valid = self._check_email_subject_and_sender(msg)
-                    if email_valid:
-                        self._send_message_to_camunda_engine(self.sender_email, self.subject, self.search_term)
-                        self.gmail.mark_email_as_read(msg["id"])
-            return None
+            for msg in messages:
+                msg = self.gmail.get_message(msg["id"])
+                email_valid = self._check_email_subject_and_sender(msg)
+                if email_valid:
+                    self._send_message_to_camunda_engine(self.sender_email, self.subject, self.search_term)
+                    self.gmail.mark_email_as_read(msg["id"])
         except Exception as e:
             print(f"Error when checking inbox messages:{e}")
             traceback.print_exc()
@@ -80,7 +76,9 @@ class CamundaGMAILWorker:
         return False
 
 if __name__ == "__main__":
-    print(f"Camunda url: {sys.argv[1]}")
-    c = CamundaGMAILWorker(sys.argv[1])
-    while True:
-        c.poll_inbox_and_send_message_to_camunda()
+    if len(sys.argv) != 1:
+        while True:
+            CamundaGMAILWorker(sys.argv[1]).poll_inbox_and_send_message_to_camunda()
+            time.sleep(5)
+    else:
+        sys.exit("Camunda url missing")
