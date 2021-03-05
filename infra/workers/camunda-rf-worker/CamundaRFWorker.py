@@ -19,6 +19,7 @@ class CamundaRFWorker:
         self.robot_file = "CamundaDemoTasks.robot"
         self.worker_id = "1"
         self.camunda_url = camunda_url
+        self.camunda_engine_rest_url = self.camunda_url+"/engine-rest"
         self.gmail = g.GmailLib()
         self.docker_client = docker.from_env()
         self.default_config = {
@@ -41,11 +42,8 @@ class CamundaRFWorker:
         if topic in ("search_duck","search_bing"):
             print(f"Start robot framework task: {topic}")
             try:
-                logFile = open(topic+"_"+task_id+".txt", "w")
                 self._release_task(task_id)
-                self.docker_client.containers.run("camunda-robotframework-demo_robotframework:latest",network="camunda-robotframework-demo_default",command="robot -d /tmp -v TOPIC:"+topic+" -v CAMUNDA_HOST:"+self.camunda_url+" /tmp")
-                #robot_run = robot.run(self.robot_file,variable="topic:"+topic,include=[topic],stdout=logFile,report=topic+"_"+task_id+".html")
-                #self._print_info_to_console(logFile.name)
+                self.docker_client.containers.run("camunda-robotframework-demo_robotframework:latest",network="camunda-robotframework-demo_default",command="robot -d /tmp -i "+topic+" -v TOPIC:"+topic+" -v CAMUNDA_HOST:"+self.camunda_url+" /tmp")
             except Exception as e:
                 print(f"Could not complete robot framework task: {e}")
                 traceback.print_exc()
@@ -78,7 +76,7 @@ class CamundaRFWorker:
         Release external task. Task is locked again by Robot framework
         """
         try:
-            url = self.camunda_url+"/engine-rest/external-task/"+id+"/unlock"
+            url = self.camunda_engine_rest_url+"/external-task/"+id+"/unlock"
             headers = {"Content-type": "application/json"}
             r = requests.post(url, headers=headers)
             r.raise_for_status()
@@ -86,15 +84,9 @@ class CamundaRFWorker:
         except Exception as e:
             print(f"Could not release task: {e}")
 
-    def _print_info_to_console(self,log_file):
-        with open(log_file, "r", encoding="utf8") as read_obj:
-            for line in read_obj:
-                print(line)
-        #Add some sleep just to see logs in console
-        time.sleep(5)
-        return None
-
-if __name__ == '__main__':
-    print(f"Camunda url: {sys.argv[1]}")
-    t = CamundaRFWorker(sys.argv[1])
-    ExternalTaskWorker(base_url=sys.argv[1]+"/engine-rest",config=t.default_config,worker_id=t.worker_id).subscribe(t.topics_to_subscribe, t.handle_task)
+if __name__ == "__main__":
+    if len(sys.argv) != 1:
+        t = CamundaRFWorker(sys.argv[1])
+        ExternalTaskWorker(base_url=t.camunda_engine_rest_url,config=t.default_config,worker_id=t.worker_id).subscribe(t.topics_to_subscribe, t.handle_task)
+    else:
+        sys.exit("Camunda url missing")

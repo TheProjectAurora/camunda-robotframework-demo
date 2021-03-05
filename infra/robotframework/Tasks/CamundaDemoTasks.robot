@@ -1,45 +1,44 @@
 *** Settings ***
-Library        CamundaLibrary.ExternalTask  ${CAMUNDA_HOST}
-Library        Browser
-Library        Collections
-Test Setup     Lock Workload and Fetch Task  ${TOPIC}
-Test Teardown  Complete Task  ${TOPIC}  ${RECENT_TASK}  ${VARIABLES}
+Library         CamundaLibrary  ${CAMUNDA_HOST}
+Library         Browser
+Library         Collections
+Suite Setup     Init Browser
+Suite Teardown  Close Browser
+Test Setup      Fetch Task  ${TOPIC}
+Test Teardown   Complete Task  result_set=${RETURN_VALUES}
 
 *** Variables ***
-${CAMUNDA_HOST}  http://localhost:8080
-${SLEEP}         1  
+${CAMUNDA_HOST}
+${TOPIC} 
 
-*** Test Cases ***
+*** Tasks ***
 Search with Bing
     [Tags]    search_bing
-    Open Browser  http://www.bing.fi  headless=${True}
-    Type Text  id=sb_form_q  ${VARIABLES['search_term']['value']}  delay=50 ms
+    New page  http://www.bing.fi
+    Type Text  id=sb_form_q  ${VARIABLES['search_term']}  delay=50 ms
     Click  xpath=//*[contains(@class, 'search')]
     Wait For Elements State  id=b_results
     ${link_text}  Get Text  xpath=//h2/a
-    Set Test Message  ${VARIABLES['search_term']['value']}\n${link_text}
-    Set To Dictionary  ${VARIABLES['result_bing']}  value=${link_text}
-    #Add some sleep to see where token goes in camunda cockpit
-    Sleep  ${SLEEP} seconds
+    Set to dictionary  ${RETURN_VALUES}  result_bing=${link_text}
 
 Search with DuckDuckGo
     [Tags]    search_duck
-    Open browser  https://duckduckgo.com  headless=${True}
+    New page  https://duckduckgo.com
     Wait for elements state  id=search_form_input_homepage
-    Type text  id=search_form_input_homepage  ${VARIABLES['search_term']['value']}  delay=50 ms
+    Type text  id=search_form_input_homepage  ${VARIABLES['search_term']}  delay=50 ms
     Click  id=search_button_homepage
     Wait for elements state  id=links
     ${link_text}  Get text  xpath=//h2/a
-    Set Test Message  ${VARIABLES['search_term']['value']}\n${link_text}
-    Set to dictionary  ${VARIABLES['result_duck']}  value=${link_text}
-    #Add some sleep to see where token goes in camunda cockpit
-    Sleep  ${SLEEP} seconds
+    Set to dictionary  ${RETURN_VALUES}  result_duck=${link_text}
 
 *** Keywords ***
-Lock Workload and Fetch Task
-    [Arguments]    ${topic_name}
-    &{variables}  Fetch and Lock workloads  ${topic_name}
-    ${recent_task}  Get recent process instance
-    Set test variable  &{VARIABLES}  &{variables}
-    Set test variable  ${RECENT_TASK}  ${recent_task}
-    Log  Task ID:\t${recent_task}
+Fetch Task
+    [Arguments]    ${topic}
+    ${variables}  Fetch workload  ${topic}
+    ${return_values}  Create dictionary
+    Set test variable  ${VARIABLES}  ${variables}
+    Set test variable  ${RETURN_VALUES}  ${return_values}
+
+Init Browser
+    New browser  headless=true
+    New context
