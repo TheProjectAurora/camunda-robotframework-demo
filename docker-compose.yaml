@@ -12,8 +12,8 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     build:
-      context: ./infra/workers
-      dockerfile: Dockerfile-Gmail-Worker
+      context: ./infra/workers/camunda-gmail-worker
+      dockerfile: Dockerfile
     depends_on:
       - gmail-credentials-offer
     volumes:
@@ -25,8 +25,8 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     build:
-      context: ./infra/workers
-      dockerfile: Dockerfile-RF-Worker
+      context: ./infra/workers/camunda-rf-worker
+      dockerfile: Dockerfile
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     entrypoint: ["/usr/local/bin/python"]
@@ -48,7 +48,7 @@ services:
       context: ./infra/credential-mount-creator
       dockerfile: Dockerfile
     volumes:
-      - ./infra/workers/credentials:/git/credentials
+      - ./credentials:/git/credentials
       - credentials:/credentials
     entrypoint: /entrypoint.sh /git/credentials/ /credentials
 
