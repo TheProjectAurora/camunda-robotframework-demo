@@ -3,19 +3,14 @@ import requests
 import sys
 import json
 import time
-import traceback
-try:
-    import libraries.GmailLib as g
-except Exception as e:
-    print(f"Error when importing GmailLib:{e}")
-
+import libraries.GmailLib as g
 
 class CamundaGMAILWorker:
 
     def __init__(self,camunda_url):
         self.sender_email_to_look = "@northcode.fi"
         self.subject_to_look = "Search"
-        self.camunda_message = "start_search_process"
+        self.start_search_camunda_message = "start_search_process"
         self.camunda_engine_rest_url = camunda_url+"/engine-rest"
         self.gmail = g.GmailLib()
 
@@ -30,20 +25,19 @@ class CamundaGMAILWorker:
                 msg = self.gmail.get_message(msg["id"])
                 email_valid = self._check_email_subject_and_sender(msg)
                 if email_valid:
-                    self._send_message_to_camunda_engine(self.sender_email, self.subject, self.search_term)
+                    self._send_start_search_message_to_camunda_engine(self.sender_email, self.subject, self.search_term)
                     self.gmail.mark_email_as_read(msg["id"])
         except Exception as e:
             print(f"Error when checking inbox messages:{e}")
-            traceback.print_exc()
 
-    def _send_message_to_camunda_engine(self, sender, subject, search_term):
+    def _send_start_search_message_to_camunda_engine(self, sender, subject, search_term):
         """
-        Sends message to camunda engine to start process
+        Sends start_search_process message to camunda engine
         """
         url = self.camunda_engine_rest_url+"/message"
         headers = {"Content-type": "application/json"}
         payload = {
-            "messageName" : self.camunda_message,
+            "messageName" : self.start_search_camunda_message,
             "processVariables" : {
             "sender" : {"value" : sender, "type": "String"},
             "subject" : {"value" : subject, "type": "String"},
@@ -54,7 +48,7 @@ class CamundaGMAILWorker:
         try:
             r = requests.post(url, json=payload, headers=headers, verify=False)
             r.raise_for_status()
-            print(f"Message sent to camunda engine: {self.camunda_message}")
+            print(f"Message sent to camunda engine: {self.start_search_camunda_message}")
         except Exception as e:
             print(f"Could not send message to camunda engine: {e}")
 
