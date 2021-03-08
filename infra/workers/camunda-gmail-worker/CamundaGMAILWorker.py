@@ -8,8 +8,7 @@ import libraries.GmailLib as g
 class CamundaGMAILWorker:
 
     def __init__(self,camunda_url):
-        self.sender_email_to_look = "@northcode.fi"
-        self.subject_to_look = "Search"
+        self.subject_to_look = "camunda search"
         self.start_search_camunda_message = "start_search_process"
         self.camunda_engine_rest_url = camunda_url+"/engine-rest"
         self.gmail = g.GmailLib()
@@ -58,14 +57,14 @@ class CamundaGMAILWorker:
         sets camunda process variables and returns true
         """
         headers=msg["payload"]["headers"]
-        subject = [i["value"] for i in headers if i["name"]=="Subject"] 
+        subject = [i["value"] for i in headers if i["name"]=="Subject"]
         sender = [i["value"] for i in headers if i["name"]=="From"]
         email = re.search(r"(?<=<).*?(?=>)", sender[0]).group(0)
-        if self.subject_to_look in subject and self.sender_email_to_look in email:
+        if self.subject_to_look in subject:
             self.search_term = msg["snippet"]
             self.subject = subject
             self.sender_email = email
-            print(f"Got {self.subject_to_look} mail from {self.sender_email_to_look}! Search term: {self.search_term}")
+            print(f"Got {self.subject_to_look}! Search term: {self.search_term}")
             return True
         return False
 

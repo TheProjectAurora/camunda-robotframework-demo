@@ -10,6 +10,10 @@ class CamundaRFWorker:
         self.camunda_url = camunda_url
         self.camunda_engine_url = self.camunda_url+"/engine-rest"
         self.docker_client = docker.from_env()
+        self.robot_container = "camunda-robotframework-demo_robotframework:latest"
+        self.container_network = "camunda-robotframework-demo_default"
+        self.robot_listener = "CamundaListener.py"
+        self.creds_volume_mount = ["camunda-robotframework-demo_credentials:/credentials"]
         self.poll_interval = 5
 
     def _start_robot_framework_task(self,topic):
@@ -18,8 +22,8 @@ class CamundaRFWorker:
         """
         print(f"Starting robot framework task: {topic}")
         try:
-            robot_cmd = "robot --pythonpath /tmp --listener /tmp/CamundaListener.py;"+self.camunda_url+" -d /tmp -i "+topic+" -v TOPIC:"+topic+" -v CAMUNDA_HOST:"+self.camunda_url+" /tmp"
-            self.docker_client.containers.run("camunda-robotframework-demo_robotframework:latest",network="camunda-robotframework-demo_default",command=robot_cmd)
+            robot_cmd = f"robot --pythonpath /tmp --listener /tmp/{self.robot_listener};{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
+            self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, command=robot_cmd, detach=True)
         except Exception as e:
             print(f"Could not complete robot framework task: {e}")
 

@@ -15,9 +15,9 @@ class GmailRFLib:
 
     def __init__(self,token=None,creds=None):
         try:
-            creds = file.Storage("/tmp/credentials/token.json").get()
+            creds = file.Storage("/credentials/token.json").get()
             if not creds or creds.invalid:
-                flow = client.flow_from_clientsecrets("/tmp/credentials/credentials.json", SCOPES)
+                flow = client.flow_from_clientsecrets("/credentials/credentials.json", SCOPES)
                 creds = tools.run_flow(flow, store)
             self.service = build("gmail", "v1", http=creds.authorize(Http()))
         except Exception as e:
