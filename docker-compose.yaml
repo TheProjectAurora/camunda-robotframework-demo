@@ -40,7 +40,7 @@ services:
     depends_on:
       - camunda
     volumes:
-      - credentials:/credentials
+      - ./infra/camunda-model-push/model:/model
     entrypoint: /wait-for-it/wait-for-it.sh camunda:8080 -- /entrypoint.sh /model camunda:8080
     
   gmail-credentials-offer:
