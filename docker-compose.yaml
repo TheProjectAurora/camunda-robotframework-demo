@@ -31,7 +31,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   ### JUST SINGLE EXECUTERS -> No infinity loop
-    camunda-modeler-push:
+  camunda-modeler-push:
     build:
       context: ./infra/camunda-model-push
       dockerfile: Dockerfile
