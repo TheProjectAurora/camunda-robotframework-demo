@@ -8,17 +8,6 @@ services:
     ports:
       - 80:8080
 
-
-  camunda-modeler-push:
-    build:
-      context: ./infra/camunda-model-push
-      dockerfile: Dockerfile
-    depends_on:
-      - camunda
-    entrypoint: /wait-for-it/wait-for-it.sh camunda:8080 -- /entrypoint.sh /model camunda:8080
-    volumes:
-      - ./infra/camunda-model-push/model/:/model/
-
   camunda-gmail-worker:
     environment:
       - PYTHONUNBUFFERED=1
@@ -28,7 +17,7 @@ services:
     entrypoint: ["/usr/local/bin/python"]
     command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
     volumes:
-      - ./infra/workers/credentials/:/app/credentials/
+      - credentials:/app/credentials
 
   camunda-rf-worker:
     environment:
@@ -41,8 +30,31 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  ### JUST SINGLE EXECUTERS -> No infinity loop
+    camunda-modeler-push:
+    build:
+      context: ./infra/camunda-model-push
+      dockerfile: Dockerfile
+    depends_on:
+      - camunda
+    entrypoint: /wait-for-it/wait-for-it.sh camunda:8080 -- /entrypoint.sh /model camunda:8080
+    volumes:
+      - credentials:/credentials
+
+  gmail-credentials-offer:
+    build:
+      context: ./infra/credential-mount-creator
+      dockerfile: Dockerfile
+    volumes:
+      - ./infra/workers/credentials:/git/credentials
+      - credentials:/credentials
+    entrypoint: /entrypoint.sh /app/credentials/ /credentials
+
   robotframework:
     build:
       context: ./infra/robotframework
       dockerfile: Dockerfile
     entrypoint: ["tail", "/dev/null"]
+
+volumes:
+  credentials:
