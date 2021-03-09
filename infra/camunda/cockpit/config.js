@@ -27,6 +27,7 @@ export default {
   // },
   bpmnJs: {
     additionalModules: [  
+      'scripts/module.js'
   //     // If you have a folder called 'my-custom-module' (in the 'cockpit' folder)
   //     // with a file called 'module.js' in it
   //     // 'my-custom-module/module' 
