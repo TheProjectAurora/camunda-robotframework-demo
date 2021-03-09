@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_013xgoj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
   <bpmn:process id="Camunda_RF_Demo" isExecutable="true">
-    <bpmn:serviceTask id="task2" name="Search with DuckDuckGo" camunda:type="external" camunda:topic="search_duck">
+    <bpmn:serviceTask id="robot_task2" name="Search with DuckDuckGo" camunda:type="external" camunda:topic="search_duck">
       <bpmn:incoming>Flow_1ndi49z</bpmn:incoming>
       <bpmn:outgoing>Flow_1bm2jp4</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="task1" name="Search with Bing" camunda:type="external" camunda:topic="search_bing">
+    <bpmn:serviceTask id="robot_task1" name="Search with Bing" camunda:type="external" camunda:topic="search_bing">
       <bpmn:incoming>Flow_1em7vbf</bpmn:incoming>
       <bpmn:outgoing>Flow_1jocims</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -15,9 +15,9 @@
       <bpmn:outgoing>Flow_1ndi49z</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_0dvcfbi" sourceRef="StartEvent_1" targetRef="Gateway_1g292co" />
-    <bpmn:sequenceFlow id="Flow_1em7vbf" sourceRef="Gateway_1g292co" targetRef="task1" />
-    <bpmn:sequenceFlow id="Flow_1ndi49z" sourceRef="Gateway_1g292co" targetRef="task2" />
-    <bpmn:serviceTask id="Activity_1yrtxqo" name="Send results email" camunda:type="external" camunda:topic="reply_result">
+    <bpmn:sequenceFlow id="Flow_1em7vbf" sourceRef="Gateway_1g292co" targetRef="robot_task1" />
+    <bpmn:sequenceFlow id="Flow_1ndi49z" sourceRef="Gateway_1g292co" targetRef="robot_task2" />
+    <bpmn:serviceTask id="robot_task3" name="Send results email" camunda:type="external" camunda:topic="send_results">
       <bpmn:incoming>Flow_0xn39hs</bpmn:incoming>
       <bpmn:incoming>Flow_1c6rq82</bpmn:incoming>
       <bpmn:outgoing>Flow_0ahkatk</bpmn:outgoing>
@@ -49,18 +49,18 @@
     <bpmn:sequenceFlow id="Flow_1jwdq8y" name="Yes" sourceRef="Gateway_1k6aovr" targetRef="Activity_1xnatqu">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{result_bing == result_duck}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0xn39hs" name="No" sourceRef="Gateway_1k6aovr" targetRef="Activity_1yrtxqo" />
-    <bpmn:sequenceFlow id="Flow_0ahkatk" sourceRef="Activity_1yrtxqo" targetRef="Event_00yz542" />
+    <bpmn:sequenceFlow id="Flow_0xn39hs" name="No" sourceRef="Gateway_1k6aovr" targetRef="robot_task3" />
+    <bpmn:sequenceFlow id="Flow_0ahkatk" sourceRef="robot_task3" targetRef="Event_00yz542" />
     <bpmn:parallelGateway id="Gateway_0wflojn">
       <bpmn:incoming>Flow_1jocims</bpmn:incoming>
       <bpmn:incoming>Flow_1bm2jp4</bpmn:incoming>
       <bpmn:outgoing>Flow_0vghlh6</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1jocims" sourceRef="task1" targetRef="Gateway_0wflojn" />
-    <bpmn:sequenceFlow id="Flow_1bm2jp4" sourceRef="task2" targetRef="Gateway_0wflojn" />
+    <bpmn:sequenceFlow id="Flow_1jocims" sourceRef="robot_task1" targetRef="Gateway_0wflojn" />
+    <bpmn:sequenceFlow id="Flow_1bm2jp4" sourceRef="robot_task2" targetRef="Gateway_0wflojn" />
     <bpmn:sequenceFlow id="Flow_0vghlh6" sourceRef="Gateway_0wflojn" targetRef="Gateway_1k6aovr" />
     <bpmn:sequenceFlow id="Flow_0570y0j" sourceRef="Activity_1xnatqu" targetRef="Gateway_162fjw2" />
-    <bpmn:sequenceFlow id="Flow_1c6rq82" name="Yes" sourceRef="Gateway_162fjw2" targetRef="Activity_1yrtxqo">
+    <bpmn:sequenceFlow id="Flow_1c6rq82" name="Yes" sourceRef="Gateway_162fjw2" targetRef="robot_task3">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{approved}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0dzm4b2" name="No" sourceRef="Gateway_162fjw2" targetRef="Event_1ls5vs5" />
@@ -136,16 +136,16 @@
         <di:waypoint x="188" y="197" />
         <di:waypoint x="275" y="197" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0ovvyc3_di" bpmnElement="task2">
+      <bpmndi:BPMNShape id="Activity_0ovvyc3_di" bpmnElement="robot_task2">
         <dc:Bounds x="370" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15yr18c_di" bpmnElement="task1">
+      <bpmndi:BPMNShape id="Activity_15yr18c_di" bpmnElement="robot_task1">
         <dc:Bounds x="370" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1vy7f7h_di" bpmnElement="Gateway_1g292co">
         <dc:Bounds x="275" y="172" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03axnqi_di" bpmnElement="Activity_1yrtxqo">
+      <bpmndi:BPMNShape id="Activity_03axnqi_di" bpmnElement="robot_task3">
         <dc:Bounds x="910" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0h8e9ec_di" bpmnElement="StartEvent_1">

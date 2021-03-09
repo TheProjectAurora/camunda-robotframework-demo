@@ -6,44 +6,86 @@ services:
       context: ./infra/camunda
       dockerfile: Dockerfile
     ports:
-      - 80:8080
+      - 8080:8080
+  
+  camunda-gmail-worker:
+    environment:
+      - PYTHONUNBUFFERED=1
+    build:
+      context: ./infra/workers/camunda-gmail-worker
+      dockerfile: Dockerfile
+    depends_on:
+      - gmail-credentials-offer
+    volumes:
+      - credentials:/app/credentials
+    entrypoint: ["/usr/local/bin/python"]
+    command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
 
+  camunda-rf-worker:
+    environment:
+      - PYTHONUNBUFFERED=1
+    build:
+      context: ./infra/workers/camunda-rf-worker
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: ["/usr/local/bin/python"]
+    command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
 
+  novnc-with-modeler:
+    build:
+      context: ./infra/novnc-with-modeler
+      dockerfile: Dockerfile
+    hostname: noVNClinux
+    cpu_count: 2
+    mem_reservation: 2G
+    scale: 0
+    # CHROME chrash without this. If crashing continue then monitor /dev/shm usage inside of noVNC by 
+    # executing 'watch -n 1 "df -h /dev/shm/"' in LXTerminal parallel when you browsing internet with chrome. 
+    # https://github.com/fcwu/docker-ubuntu-vnc-desktop/issues/205#issuecomment-782880997
+    # https://developers.google.com/web/tools/puppeteer/troubleshooting#tips
+    shm_size: 1G
+    cap_add:
+      #Google Chrome require this: https://github.com/jessfraz/dockerfiles/issues/65
+      - SYS_ADMIN
+    ports:
+      - '443:443'
+    volumes:
+      - ./infra/camunda-model-push/model:/home/coder/model
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - SSL_PORT=443
+      - USER=coder
+      - PASSWORD=coderpw
+      - HTTP_PASSWORD=coderpw
+      #- RESOLUTION=1920x1080
+      #- X11VNC_ARGS=-multiptr
+
+  ### JUST SINGLE EXECUTERS -> No infinity loop
   camunda-modeler-push:
     build:
       context: ./infra/camunda-model-push
       dockerfile: Dockerfile
     depends_on:
       - camunda
+    volumes:
+      - ./infra/camunda-model-push/model:/model
     entrypoint: /wait-for-it/wait-for-it.sh camunda:8080 -- /entrypoint.sh /model camunda:8080
-    volumes:
-      - ./infra/camunda-model-push/model/:/model/
-
-  camunda-gmail-worker:
-    environment:
-      - PYTHONUNBUFFERED=1
+    
+  gmail-credentials-offer:
     build:
-      context: ./infra/workers
-      dockerfile: Dockerfile-Gmail-Worker
-    entrypoint: ["/usr/local/bin/python"]
-    command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
+      context: ./infra/credential-mount-creator
+      dockerfile: Dockerfile
     volumes:
-      - ./infra/workers/credentials/:/app/credentials/
-
-  camunda-rf-worker:
-    environment:
-      - PYTHONUNBUFFERED=1
-    build:
-      context: ./infra/workers
-      dockerfile: Dockerfile-RF-Worker
-    entrypoint: ["/usr/local/bin/python"]
-    command: ["/app/CamundaRFWorker.py", "http://camunda:8080"]
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./infra/workers/credentials/:/app/credentials/
+      - ./credentials:/git/credentials
+      - credentials:/credentials
+    entrypoint: /entrypoint.sh /git/credentials/ /credentials
 
   robotframework:
     build:
       context: ./infra/robotframework
       dockerfile: Dockerfile
     entrypoint: ["tail", "/dev/null"]
+
+volumes:
+  credentials:
