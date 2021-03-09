@@ -51,4 +51,6 @@ RUN set -xe \
     && tar -zxvf camunda-modeler-linux-x64.tar.gz \
     && rm -Rfv camunda-modeler-linux-x64.tar.gz \
     && chmod -v +x camunda-modeler-*-linux-x64/camunda-modeler \
-    && ln -sv `echo $(pwd)/$(ls -h camunda-modeler-*-linux-x64/camunda-modeler)` /usr/bin/camunda-modeler
+    && ln -sv `echo $(pwd)/$(ls -h camunda-modeler-*-linux-x64/camunda-modeler)` /usr/bin/camunda-modeler \
+    && cd camunda-modeler-*-linux-x64/resources/plugins \
+    && git clone https://github.com/datakurre/camunda-modeler-robot-plugin
