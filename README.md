@@ -11,7 +11,7 @@
 
 # novnc-camunda-modeler usage
 - By default novnc-camunda-modeler is not started. Execute ```docker-compose scale novnc-with-modeler=1``` to start it.
-- https//localhost should answer
+- https://localhost should answer
 - Login user=coder pw=coderpw
 - Note: Copy-Paste works only by using noVNC clipboard menu left side of novnc view
 - Open System tools => LXTerminal and execute: ```camunda-modeler ./model/camunda_rf_demo.bpmn```
