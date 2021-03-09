@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
-
+  
   camunda-gmail-worker:
     environment:
       - PYTHONUNBUFFERED=1
