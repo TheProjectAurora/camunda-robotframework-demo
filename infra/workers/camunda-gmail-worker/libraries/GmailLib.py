@@ -26,8 +26,8 @@ class GmailLib:
         messages = None
         try:
             messages = self.service.users().messages().list(userId="me",labelIds = ["INBOX","UNREAD"]).execute().get("messages", [])
-            if len(messages) > 0:
-                print(f"Messages found!")
+            msg_count = len(messages)
+            print(f"{msg_count} message(s) found from mailbox")
         except Exception as e:
             print(f"Could not fetch messages: {e}")
         return messages
@@ -60,4 +60,4 @@ class GmailLib:
         message["subject"] = subject
         raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
         body = {"raw": raw}
-        return body  
+        return body

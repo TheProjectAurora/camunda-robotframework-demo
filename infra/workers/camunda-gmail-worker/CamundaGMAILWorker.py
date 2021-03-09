@@ -7,11 +7,13 @@ import libraries.GmailLib as g
 
 class CamundaGMAILWorker:
 
-    def __init__(self,camunda_url):
+    def __init__(self,camunda_url,poll_interval=5):
         self.subject_to_look = "camunda search"
         self.start_search_camunda_message = "start_search_process"
         self.camunda_engine_rest_url = camunda_url+"/engine-rest"
+        self.poll_interval = poll_interval
         self.gmail = g.GmailLib()
+        self.git_repo = ""
 
     def poll_inbox_and_send_message_to_camunda(self):
         """
@@ -42,7 +44,8 @@ class CamundaGMAILWorker:
             "subject" : {"value" : subject, "type": "String"},
             "search_term" : {"value" : search_term, "type": "String"},
             "result_duck" : {"value" : None, "type": "String"},
-            "result_bing" : {"value" : None, "type": "String"}}
+            "result_bing" : {"value" : None, "type": "String"},
+            "git_repo" : {"value" : self.git_repo, "type": "String"}}
             }
         try:
             r = requests.post(url, json=payload, headers=headers, verify=False)
@@ -70,8 +73,9 @@ class CamundaGMAILWorker:
 
 if __name__ == "__main__":
     if len(sys.argv) != 1:
+        t = CamundaGMAILWorker(sys.argv[1])
         while True:
-            CamundaGMAILWorker(sys.argv[1]).poll_inbox_and_send_message_to_camunda()
-            time.sleep(5)
+            t.poll_inbox_and_send_message_to_camunda()
+            time.sleep(t.poll_interval)
     else:
         sys.exit("Camunda url missing")
