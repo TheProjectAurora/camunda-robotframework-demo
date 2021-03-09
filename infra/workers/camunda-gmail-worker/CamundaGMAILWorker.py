@@ -13,7 +13,6 @@ class CamundaGMAILWorker:
         self.camunda_engine_rest_url = camunda_url+"/engine-rest"
         self.poll_interval = poll_interval
         self.gmail = g.GmailLib()
-        self.git_repo = ""
 
     def poll_inbox_and_send_message_to_camunda(self):
         """
@@ -44,8 +43,7 @@ class CamundaGMAILWorker:
             "subject" : {"value" : subject, "type": "String"},
             "search_term" : {"value" : search_term, "type": "String"},
             "result_duck" : {"value" : None, "type": "String"},
-            "result_bing" : {"value" : None, "type": "String"},
-            "git_repo" : {"value" : self.git_repo, "type": "String"}}
+            "result_bing" : {"value" : None, "type": "String"}}
             }
         try:
             r = requests.post(url, json=payload, headers=headers, verify=False)

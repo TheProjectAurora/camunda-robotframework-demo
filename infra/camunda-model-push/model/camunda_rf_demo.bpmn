@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_013xgoj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
   <bpmn:process id="Camunda_RF_Demo" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:properties>
+        <camunda:property name="git_repo" value="bing_repo" />
+      </camunda:properties>
+    </bpmn:extensionElements>
     <bpmn:serviceTask id="robot_task2" name="Search with DuckDuckGo" camunda:type="external" camunda:topic="search_duck">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="git_repo" value="duck_repo" />
+        </camunda:properties>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="git_repo">repo_duck</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ndi49z</bpmn:incoming>
       <bpmn:outgoing>Flow_1bm2jp4</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="robot_task1" name="Search with Bing" camunda:type="external" camunda:topic="search_bing">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="git_repo" value="bing_repo" />
+        </camunda:properties>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="git_repo">repo_bing</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1em7vbf</bpmn:incoming>
       <bpmn:outgoing>Flow_1jocims</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -18,6 +39,14 @@
     <bpmn:sequenceFlow id="Flow_1em7vbf" sourceRef="Gateway_1g292co" targetRef="robot_task1" />
     <bpmn:sequenceFlow id="Flow_1ndi49z" sourceRef="Gateway_1g292co" targetRef="robot_task2" />
     <bpmn:serviceTask id="robot_task3" name="Send results email" camunda:type="external" camunda:topic="send_results">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="git_repo" value="email_repo" />
+        </camunda:properties>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="git_repo">repo_email</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0xn39hs</bpmn:incoming>
       <bpmn:incoming>Flow_1c6rq82</bpmn:incoming>
       <bpmn:outgoing>Flow_0ahkatk</bpmn:outgoing>
