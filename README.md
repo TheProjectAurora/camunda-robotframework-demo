@@ -2,7 +2,8 @@
 - Add google mail credentials to place: https://github.com/TheProjectAurora/camunda-robotframework-demo/tree/main/credentials
 - Unix socker privialedges so host docker coulbe utilized from container: ```chmod 777 /var/run/docker.sock```
 - Execute: ```docker-compose up -d```
-- Camunda should start answer by using user=demo pw=demo : http://localhost:8081/camunda
+- Camunda should start answer by using user=demo pw=demo : http://localhost:8080/camunda
+- If demo not work ok then empty your browser cache and reload page
 # Shut down
 - Execute: ```docker-compose down```
 - Execute: ```docker system prune```
