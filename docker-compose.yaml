@@ -6,7 +6,9 @@ services:
       context: ./infra/camunda
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      # THIS IS SO WEIRD: https://github.com/datakurre/camunda-cockpit-plugins/issues/6
+      # THAT WHY USE 8081 host port
+      - 8081:8080
   
   camunda-gmail-worker:
     environment:
