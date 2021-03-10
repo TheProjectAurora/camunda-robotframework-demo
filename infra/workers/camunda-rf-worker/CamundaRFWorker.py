@@ -3,6 +3,9 @@ import sys
 import time
 import docker
 
+class NotFound(Exception):
+    pass
+
 class CamundaRFWorker:
 
     def __init__(self,camunda_url,poll_interval=5):
@@ -13,10 +16,11 @@ class CamundaRFWorker:
         self.container_network = "camunda-robotframework-demo_default"
         self.robot_listener = "CamundaListener.py"
         self.creds_volume_mount = ["camunda-robotframework-demo_credentials:/credentials"]
-        self.git_repo_param_name = "git_repo"
+        self.git_repo_param = "git_repo"
+        self.git_hub_url = "https://github.com/"
         self.poll_interval = poll_interval
 
-    def _start_robot_framework_task(self,topic,task_id):
+    def _start_robot_framework_container(self,topic,task_id):
         """
         Starts robot framework container with topic name
         """
@@ -24,8 +28,10 @@ class CamundaRFWorker:
             print(f"Starting robot framework task: {topic}")
             git_repo = self._fetch_git_repository_for_task(task_id)
             print(task_id+"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+str(git_repo))
+            git_clone_cmd = f"git clone {self.git_hub_url}{git_repo} /tmp"
+            print(git_clone_cmd)
             robot_cmd = f"robot --pythonpath /tmp --listener /tmp/{self.robot_listener};{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
-            self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, command=robot_cmd, detach=True, auto_remove=True)
+            self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, command=[git_clone_cmd, robot_cmd], detach=True, auto_remove=True)
         except Exception as e:
             print(f"Could not complete robot framework task: {e}")
 
@@ -40,22 +46,25 @@ class CamundaRFWorker:
             print(f"{task_count} external task(s) found from engine")
             for t in r.json():
                 if "robot" in t["activityId"] and (not t["workerId"] and not t["retries"]):
-                    self._start_robot_framework_task(t["topicName"],t["id"])
+                    self._start_robot_framework_container(t["topicName"],t["activityId"])
         except Exception as e:
             print(f"Could not fetch external tasks: {e}")
 
     def _fetch_git_repository_for_task(self,task_id):
         """
-        Fetch task git repository. Git repo variable must be set in task output parameters section.
+        Fetch task git repository. Git repo variable must be set in task parameters section.
         If variable not found, raises an exception
         """
         try:
-            r = requests.get(url = self.camunda_engine_url+"/variable-instance?taskId="+task_id+"&variableName="+self.git_repo_param_name)
+            r = requests.get(url = self.camunda_engine_url+"/variable-instance?&variableName="+self.git_repo_param)
             r.raise_for_status()
-            print(f"nothing here")
             for t in r.json():
-                if t["value"]:
-                    return t["value"]
+                if task_id in t["activityInstanceId"]:
+                        if t["value"]:
+                            git_repo = t["value"]
+                            return git_repo
+            else:
+                raise NotFound(f"Git repository not found")
         except Exception as e:
             print(f"Could not fetch git repo variable for task {task_id}: {e}")
         

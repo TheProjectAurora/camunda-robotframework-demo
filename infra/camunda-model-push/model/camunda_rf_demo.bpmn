@@ -12,7 +12,7 @@
           <camunda:property name="git_repo" value="duck_repo" />
         </camunda:properties>
         <camunda:inputOutput>
-          <camunda:outputParameter name="git_repo">repo_duck</camunda:outputParameter>
+          <camunda:inputParameter name="git_repo">TheProjectAurora/camunda-robotframework-demo</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ndi49z</bpmn:incoming>
@@ -24,7 +24,7 @@
           <camunda:property name="git_repo" value="bing_repo" />
         </camunda:properties>
         <camunda:inputOutput>
-          <camunda:outputParameter name="git_repo">repo_bing</camunda:outputParameter>
+          <camunda:inputParameter name="git_repo">TheProjectAurora/camunda-robotframework-demo</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1em7vbf</bpmn:incoming>
@@ -44,7 +44,7 @@
           <camunda:property name="git_repo" value="email_repo" />
         </camunda:properties>
         <camunda:inputOutput>
-          <camunda:outputParameter name="git_repo">repo_email</camunda:outputParameter>
+          <camunda:inputParameter name="git_repo">TheProjectAurora/camunda-robotframework-demo</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0xn39hs</bpmn:incoming>
