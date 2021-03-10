@@ -30,11 +30,16 @@ class CamundaRFWorker:
             git_clone_cmd = f"git clone {self.git_hub_url}{git_repo}"
             print(git_clone_cmd)
             robot_cmd = f"robot --pythonpath /tmp --pythonpath ./libaries --listener /tmp/{self.robot_listener};{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
-            print("############")
-            run_cmd = f"cd /tmp && {git_clone_cmd} && {robot_cmd}"
-            print("############")
+            #robot_cmd = f"robot --pythonpath /tmp --pythonpath ./libaries --listener /tmp/{self.robot_listener};{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
+            #print("############")
+            #run_cmd = f"cd /tmp && {git_clone_cmd} && {robot_cmd}"
+            #print("############")
             #git clone -b <branchname> <remote-repo-url>
             cmdddd = f"cd /tmp && git clone -b feature/git_clone_before_running_tasks https://github.com/TheProjectAurora/camunda-robotframework-demo && cd /tmp/camunda-robotframework-demo && {robot_cmd}"
+            print("############")
+            #run_cmd = f"cd /tmp && {git_clone_cmd} && {robot_cmd}"
+            print(cmdddd)
+            print("############")
             command2 =["/bin/sh", "-c", cmdddd]
             self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, entrypoint=command2, detach=False, auto_remove=False)
         except Exception as e:
