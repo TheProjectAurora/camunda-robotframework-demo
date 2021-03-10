@@ -1,5 +1,5 @@
 *** Settings ***
-Library  CamundaLibrary  ${CAMUNDA_HOST}
+Library  ..${/}libaries${/}CamundaLibrary  ${CAMUNDA_HOST}
 Library  Browser
 Library  Collections
 Library  GmailRFLib
