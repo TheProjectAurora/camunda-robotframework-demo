@@ -1,8 +1,8 @@
 *** Settings ***
-Library  ..${/}libraries${/}GmailRFLib.py  ${CAMUNDA_HOST}
+Library  CamundaLibrary  ${CAMUNDA_HOST}
 Library  Browser
 Library  Collections
-Library  GmailRFLib
+Library  ..${/}libraries${/}GmailRFLib
 
 *** Keywords ***
 Init Browser

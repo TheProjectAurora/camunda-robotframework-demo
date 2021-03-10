@@ -35,7 +35,8 @@ class CamundaRFWorker:
             #run_cmd = f"cd /tmp && {git_clone_cmd} && {robot_cmd}"
             #print("############")
             #git clone -b <branchname> <remote-repo-url>
-            cmdddd = f"cd /tmp && git clone -b feature/git_clone_before_running_tasks https://github.com/TheProjectAurora/camunda-robotframework-demo && cd /tmp/camunda-robotframework-demo && {robot_cmd}"
+            cmdddd= f"cd /tmp && git clone -b feature/git_clone_before_running_tasks {self.git_hub_url}{git_repo} && cd /tmp/camunda-robotframework-demo && robot --pythonpath /tmp --listener /tmp/CamundaListener.py\;http://camunda:8080 -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:http://camunda:8080 ."
+            #cmdddd = f"cd /tmp && git clone -b feature/git_clone_before_running_tasks https://github.com/TheProjectAurora/camunda-robotframework-demo && cd /tmp/camunda-robotframework-demo && {robot_cmd}"
             print("############")
             #run_cmd = f"cd /tmp && {git_clone_cmd} && {robot_cmd}"
             print(cmdddd)

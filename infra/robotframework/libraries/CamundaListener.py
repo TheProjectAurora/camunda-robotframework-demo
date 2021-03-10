@@ -16,14 +16,17 @@ class CamundaListener:
         self.result_set = []
 
     def end_test(self, data, result):
-        self.task_id = BuiltIn().get_variable_value("${TASK_ID}")
-        self.worker_id = BuiltIn().get_variable_value("${WORKER_ID}")
-        self.test_message = BuiltIn().get_variable_value("${TEST_MESSAGE}")
-        if result.passed:
-            self._set_task_completed_variables()
-            self._complete_task()
-        else:
-            self._fail_task(self.test_message)
+        try:
+            self.task_id = BuiltIn().get_variable_value("${TASK_ID}")
+            self.worker_id = BuiltIn().get_variable_value("${WORKER_ID}")
+            self.test_message = BuiltIn().get_variable_value("${TEST_MESSAGE}")
+            if result.passed:
+                self._set_task_completed_variables()
+                self._complete_task()
+            else:
+                self._fail_task(self.test_message)
+        except Exception as e:
+            logger.error(f"Error when updating task results: {e}")
 
     def _complete_task(self):
         """
@@ -48,6 +51,7 @@ class CamundaListener:
         Sends task failed to engine
         """
         try:
+            error_message = str(error_message)
             url = self.camunda_engine_rest_url+"/external-task/"+self.task_id+"/failure"
             headers = {"Content-type": "application/json"}
             payload = {
