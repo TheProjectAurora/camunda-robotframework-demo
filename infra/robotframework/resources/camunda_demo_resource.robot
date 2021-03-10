@@ -2,7 +2,7 @@
 Library  CamundaLibrary  ${CAMUNDA_HOST}
 Library  Browser
 Library  Collections
-Library  ..${/}libraries${/}GmailRFLib
+Library  ..${/}libraries${/}GmailRFLib.py
 
 *** Keywords ***
 Init Browser
