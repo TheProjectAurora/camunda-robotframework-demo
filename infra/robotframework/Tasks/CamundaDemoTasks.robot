@@ -1,5 +1,5 @@
 *** Settings ***
-Resource     camunda_demo_resource.robot
+Resource     ..\resources\camunda_demo_resource.robot
 Suite Setup  Fetch Task  ${TOPIC}
 
 *** Tasks ***

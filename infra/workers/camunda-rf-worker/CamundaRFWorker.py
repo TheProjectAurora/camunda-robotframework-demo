@@ -27,11 +27,15 @@ class CamundaRFWorker:
         try:
             print(f"Starting robot framework task: {topic}")
             git_repo = self._fetch_git_repository_for_task(task_id)
-            print(task_id+"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+str(git_repo))
-            git_clone_cmd = f"git clone {self.git_hub_url}{git_repo} /tmp"
+            git_clone_cmd = f"git clone {self.git_hub_url}{git_repo}"
             print(git_clone_cmd)
-            robot_cmd = f"robot --pythonpath /tmp --listener /tmp/{self.robot_listener};{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
-            self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, command=[git_clone_cmd, robot_cmd], detach=True, auto_remove=True)
+            robot_cmd = f"robot --pythonpath /tmp --pythonpath ./libaries --listener /tmp/{self.robot_listener};{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
+            print("############")
+            run_cmd = f"cd /tmp && {git_clone_cmd} && {robot_cmd}"
+            print("############")
+            cmdddd = f"cd /tmp && git clone https://github.com/TheProjectAurora/camunda-robotframework-demo && git checkout feature/git_clone_before_running_tasks && cd /tmp/camunda-robotframework-demo && robot ."
+            command2 =["/bin/sh", "-c", cmdddd]
+            self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, entrypoint=command2, detach=False, auto_remove=False)
         except Exception as e:
             print(f"Could not complete robot framework task: {e}")
 
