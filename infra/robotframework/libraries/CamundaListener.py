@@ -30,7 +30,7 @@ class CamundaListener:
         except Exception as e:
             logger.error(f"Error when updating task results: {e}")
 
-    def report_file(path):
+    def report_file(self,path):
         self._upload_results_to_cloud(path)
 
     def _complete_task(self):
