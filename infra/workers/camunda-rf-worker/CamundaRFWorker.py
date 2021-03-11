@@ -31,6 +31,7 @@ class CamundaRFWorker:
             git_repo = self._fetch_git_repository_for_task(task_id)
             git_clone_cmd = f"cd /tmp && git clone -b feature/results_to_own_cloud {self.git_hub_url}{git_repo}"
             robot_cmd = f"robot --pythonpath {self.robot_python_path} --listener {self.robot_listener}\;{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
+            print("CMD:"+robot_cmd)
             entry_point =["/bin/sh", "-c", f"{git_clone_cmd} && cd /tmp/{self.project_name} && {robot_cmd}"]
             self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, entrypoint=entry_point, detach=False, auto_remove=False)
         except Exception as e:

@@ -78,9 +78,10 @@ class CamundaListener:
             self.variable = k
             self.value = v
 
-    def _upload_results_to_cloud(self):
+    def _upload_results_to_cloud(self,path):
         try:
             dir = os.getcwd()
+            logger.error(f"PATH: {path}")
             logger.error(f"cur dir: {dir}")
             self.oc_client.login("sakke","sakke")
             self.oc_client.put_file(f"{dir}/tmp/report.html","report.html")
