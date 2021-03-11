@@ -15,7 +15,7 @@ class CamundaListener:
         self.worker_id = None
         self.test_message = None
         self.result_set = []
-        self.oc_client = owncloud.Client("http://owncloud:80")
+        self.oc_client = owncloud.Client("http://localhost:80")
 
     def end_test(self, data, result):
         try:
