@@ -1,6 +1,7 @@
 import requests
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+import owncloud
 
 """Camunda listener takes care of task status update to engine
 """
@@ -14,6 +15,7 @@ class CamundaListener:
         self.worker_id = None
         self.test_message = None
         self.result_set = []
+        self.oc_client = owncloud.Client("http://owncloud:80")
 
     def end_test(self, data, result):
         try:
@@ -27,6 +29,9 @@ class CamundaListener:
                 self._fail_task(self.test_message)
         except Exception as e:
             logger.error(f"Error when updating task results: {e}")
+
+    def report_file(path):
+        self._upload_results_to_cloud(path)
 
     def _complete_task(self):
         """
@@ -71,3 +76,13 @@ class CamundaListener:
         for k, v in self.result_set.items():
             self.variable = k
             self.value = v
+
+    def _upload_results_to_cloud(self,path):
+        try:
+            self.oc_client.login("sakke","sakke")
+            self.oc_client.put_file(path,"report.html")
+            link_info = self.oc_client.share_file_with_link("report.html")
+            print(f"Report file uploaded:{link_info}")
+        except Exception as e:
+            print(f"Could not upload report file: {e}")
+            logger.error(f"Could not upload report file: {e}")

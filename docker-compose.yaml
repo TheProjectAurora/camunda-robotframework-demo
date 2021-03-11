@@ -87,5 +87,13 @@ services:
       dockerfile: Dockerfile
     entrypoint: ["tail", "/dev/null"]
 
+  owncloud:
+    image: owncloud/server
+    ports:
+      - 80:8080
+    environment:
+      - OWNCLOUD_ADMIN_USERNAME=sakke
+      - OWNCLOUD_ADMIN_PASSWORD=sakke
+
 volumes:
   credentials:
