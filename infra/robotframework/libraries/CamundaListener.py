@@ -84,9 +84,10 @@ class CamundaListener:
             logger.error(f"PATH: {path}")
             logger.error(f"cur dir: {dir}")
             self.oc_client.login("sakke","sakke")
-            self.oc_client.put_file(f"{path}","report.html")
+            self.oc_client.put_file("report.html",path)
             link_info = self.oc_client.share_file_with_link("report.html")
             print(f"Report file uploaded:{link_info}")
+            logger.error(f"Report file uploaded:{link_info}")
         except Exception as e:
             print(f"Could not upload report file: {e}")
             logger.error(f"Could not upload report file: {e}")
