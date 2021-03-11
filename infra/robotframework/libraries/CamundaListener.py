@@ -80,7 +80,7 @@ class CamundaListener:
     def _upload_results_to_cloud(self,path):
         try:
             self.oc_client.login("sakke","sakke")
-            self.oc_client.put_file(path,"report.html")
+            self.oc_client.put_file("/tmp/"+path,"report.html")
             link_info = self.oc_client.share_file_with_link("report.html")
             print(f"Report file uploaded:{link_info}")
         except Exception as e:
