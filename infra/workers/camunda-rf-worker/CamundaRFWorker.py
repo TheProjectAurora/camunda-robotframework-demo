@@ -15,7 +15,8 @@ class CamundaRFWorker:
         self.project_name = "camunda-robotframework-demo"
         self.robot_container = "camunda-robotframework-demo_robotframework:latest"
         self.container_network = "camunda-robotframework-demo_default"
-        self.robot_listener = "/tmp/camunda-robotframework-demo/infra/robotframework/libraries/CamundaListener.py"
+        self.robot_python_path = "./infra/robotframework/libraries/"
+        self.robot_listener = "CamundaListener"
         self.creds_volume_mount = ["camunda-robotframework-demo_credentials:/credentials"]
         self.git_repo_param = "git_repo"
         self.git_hub_url = "https://github.com/"
@@ -29,7 +30,7 @@ class CamundaRFWorker:
             print(f"Starting robot framework task: {topic}")
             git_repo = self._fetch_git_repository_for_task(task_id)
             git_clone_cmd = f"cd /tmp && git clone -b feature/git_clone_before_running_tasks {self.git_hub_url}{git_repo}"
-            robot_cmd = f"robot --listener {self.robot_listener}\;{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
+            robot_cmd = f"robot --pythonpath {self.robot_python_path} --listener {self.robot_listener}\;{self.camunda_url} -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
             entry_point =["/bin/sh", "-c", f"{git_clone_cmd} && cd /tmp/{self.project_name} && {robot_cmd}"]
             self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, entrypoint=entry_point, detach=True, auto_remove=True)
         except Exception as e:
