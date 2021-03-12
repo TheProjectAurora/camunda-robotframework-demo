@@ -1,8 +1,8 @@
 import requests
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+from robot import rebot
 import owncloud
-import os
 
 """Camunda listener takes care of task status update to engine
 """
