@@ -17,23 +17,28 @@ class CamundaListener:
         self.engine = self.camunda_url+"/engine-rest"
         self.result_set = []
         self.oc_client = owncloud.Client("http://owncloud:8080")
+        self.test_status = True
 
     def end_test(self, data, result):
         try:
             self.task_id = BuiltIn().get_variable_value("${TASK_ID}")
             self.worker_id = BuiltIn().get_variable_value("${WORKER_ID}")
-            test_message = BuiltIn().get_variable_value("${TEST_MESSAGE}")
+            self.test_message = BuiltIn().get_variable_value("${TEST_MESSAGE}")
             if result.passed:
-                self._set_task_completed_variables()
-                self._complete_task()
+                self.test_status = True
             else:
-                self._fail_task(test_message)
+                self.test_status = False
         except Exception as e:
             logger.error(f"Error when end test happened: {e}")
 
     def close(self):
         try:
             self._upload_results()
+            if self.test_status:
+                self._set_task_completed_variables()
+                self._complete_task()
+            else:
+                self._fail_task()
         except Exception as e:
             logger.error(f"Error when close happened: {e}")
     
@@ -64,12 +69,12 @@ class CamundaListener:
         except Exception as e:
             logger.error(f"Could not send complete task to engine: {e}")
 
-    def _fail_task(self,error_message):
+    def _fail_task(self):
         """
         Sends task failed to engine
         """
         try:
-            error_message = str(error_message)
+            error_message = str(self.test_message)
             url = self.engine+"/external-task/"+self.task_id+"/failure"
             headers = {"Content-type": "application/json"}
             payload = {
