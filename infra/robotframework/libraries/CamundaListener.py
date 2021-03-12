@@ -16,8 +16,12 @@ class CamundaListener:
         self.camunda_url = camunda_url
         self.engine = self.camunda_url+"/engine-rest"
         self.result_set = []
-        self.oc_client = owncloud.Client("http://owncloud:8080")
         self.test_status = True
+        try:
+            self.oc_client = owncloud.Client("http://owncloud:8080")
+            self.oc_client.login("demo","demo")
+        except Exception as e:
+            logger.error(f"Error when creating cloud instance: {e}")
 
     def end_test(self, data, result):
         try:
@@ -109,13 +113,12 @@ class CamundaListener:
 
     def _upload_results(self):
         try:
-            self.oc_client.login('sakke','sakke')
             process_id = self._get_process_id()
             try:
                 self.oc_client.list(process_id+"/")
                 self.oc_client.get_file(process_id+"/output.xml","o.xml")
                 rebot("o.xml", self.output_file, merge=True, rpa=True, doc=f"Task results for process id:{process_id}",
-                    reporttitle=f"{process_id} Report",name="Tmp", report=self.report_file, output=self.output_file, log=self.log_file)
+                    reporttitle=f"{process_id} Report", name=".", report=self.report_file, output=self.output_file, log=self.log_file)
             except Exception as e:
                 if str(e) == "HTTP error: 404":
                     self.oc_client.mkdir(process_id)
