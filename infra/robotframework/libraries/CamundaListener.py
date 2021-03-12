@@ -24,6 +24,7 @@ class CamundaListener:
             self.task_id = BuiltIn().get_variable_value("${TASK_ID}")
             self.worker_id = BuiltIn().get_variable_value("${WORKER_ID}")
             self.test_message = BuiltIn().get_variable_value("${TEST_MESSAGE}")
+            self._set_task_completed_variables()
             if result.passed:
                 self.test_status = True
             else:
@@ -35,7 +36,6 @@ class CamundaListener:
         try:
             robot_results = self._upload_results()
             if self.test_status:
-                self._set_task_completed_variables()
                 self._complete_task(robot_results)
             else:
                 self._fail_task()
