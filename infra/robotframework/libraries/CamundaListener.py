@@ -108,6 +108,7 @@ class CamundaListener:
 
     def _upload_results(self):
         try:
+            self.oc.login('sakke','sakke')
             process_id = self._get_process_id()
             try:
                 self.oc_client.list(process_id+"/")
