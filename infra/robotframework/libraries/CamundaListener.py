@@ -33,10 +33,10 @@ class CamundaListener:
 
     def close(self):
         try:
-            self._upload_results()
+            robot_results = self._upload_results()
             if self.test_status:
                 self._set_task_completed_variables()
-                self._complete_task()
+                self._complete_task(robot_results)
             else:
                 self._fail_task()
         except Exception as e:
@@ -51,7 +51,7 @@ class CamundaListener:
     def report_file(self, path):
         self.report_file = path
 
-    def _complete_task(self):
+    def _complete_task(self, robot_results_url):
         """
         Sends task complete to engine
         """
@@ -61,7 +61,8 @@ class CamundaListener:
             payload = {
             "workerId" : self.worker_id,
             "variables" : {
-            self.variable : {"value" : self.value, "type": "String"}}
+            self.variable : {"value" : self.value, "type": "String"},
+            "robot_results" : {"value" : robot_results_url, "type": "String"}}
             }
             r = requests.post(url, json=payload, headers=headers, verify=False)
             r.raise_for_status()
@@ -108,7 +109,7 @@ class CamundaListener:
 
     def _upload_results(self):
         try:
-            self.oc.login('sakke','sakke')
+            self.oc_client.login('sakke','sakke')
             process_id = self._get_process_id()
             try:
                 self.oc_client.list(process_id+"/")
