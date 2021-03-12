@@ -123,5 +123,5 @@ class CamundaListener:
             self.oc_client.put_file(process_id+"/output.xml", self.output_file)
             self.oc_client.put_file(process_id+"/report.html", self.report_file)
         except Exception as e:
-            logger.error(f"Could not send fail task to engine: {e}")
+            logger.error(f"Could not upload results: {e}")
         return self.oc_client.share_file_with_link(process_id)
