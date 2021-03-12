@@ -48,7 +48,7 @@ class CamundaGMAILWorker:
         try:
             r = requests.post(url, json=payload, headers=headers, verify=False)
             r.raise_for_status()
-            print(f"Message sent to engine: {self.start_search_camunda_message}")
+            print(f"Message sent to engine: {self.msg_start_search}")
         except Exception as e:
             print(f"Could not send message to engine: {e}")
 

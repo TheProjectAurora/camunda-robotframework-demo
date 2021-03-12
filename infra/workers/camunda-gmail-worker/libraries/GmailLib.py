@@ -27,7 +27,7 @@ class GmailLib:
         try:
             messages = self.service.users().messages().list(userId="me",labelIds = ["INBOX","UNREAD"]).execute().get("messages", [])
             msg_count = len(messages)
-            print(f"{msg_count} message(s) found from mailbox")
+            print(f"{msg_count} message(s) found from mailbox",flush=True)
         except Exception as e:
             print(f"Could not fetch messages: {e}")
         return messages
