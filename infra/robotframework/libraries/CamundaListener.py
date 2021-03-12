@@ -31,7 +31,7 @@ class CamundaListener:
         except Exception as e:
             logger.error(f"Error when end test happened: {e}")
 
-    def close(self, path):
+    def close(self):
         try:
             self._upload_results()
         except Exception as e:
