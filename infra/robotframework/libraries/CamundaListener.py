@@ -34,9 +34,9 @@ class CamundaListener:
 
     def close(self):
         try:
-            robot_results = self._upload_results()
+            report_url = self._upload_results()
             if self.test_status:
-                self._complete_task(robot_results)
+                self._complete_task(report_url)
             else:
                 self._fail_task()
         except Exception as e:
@@ -62,7 +62,7 @@ class CamundaListener:
             "workerId" : self.worker_id,
             "variables" : {
             self.variable : {"value" : self.value, "type": "String"},
-            "robot_results" : {"value" : str(robot_results_url), "type": "String"}}
+            "robot_results" : {"value" : robot_results_url, "type": "String"}}
             }
             r = requests.post(url, json=payload, headers=headers, verify=False)
             r.raise_for_status()
@@ -126,4 +126,4 @@ class CamundaListener:
             self.oc_client.put_file(process_id+"/report.html", self.report_file)
         except Exception as e:
             logger.error(f"Could not upload results: {e}")
-        return self.oc_client.share_file_with_link(process_id)
+        return self.oc_client.share_file_with_link(process_id).get_link()
