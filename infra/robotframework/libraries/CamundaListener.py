@@ -62,7 +62,7 @@ class CamundaListener:
             "workerId" : self.worker_id,
             "variables" : {
             self.variable : {"value" : self.value, "type": "String"},
-            "robot_results" : {"value" : robot_results_url, "type": "String"}}
+            "Robot framework report" : {"value" : robot_results_url, "type": "String"}}
             }
             r = requests.post(url, json=payload, headers=headers, verify=False)
             r.raise_for_status()
@@ -115,7 +115,7 @@ class CamundaListener:
                 self.oc_client.list(process_id+"/")
                 self.oc_client.get_file(process_id+"/output.xml","o.xml")
                 rebot("o.xml", self.output_file, merge=True, rpa=True, doc=f"Task results for process id:{process_id}",
-                      reporttitle=f"{process_id} Report",name=" ", report=self.report_file, output=self.output_file, log=self.log_file)
+                    reporttitle=f"{process_id} Report",name="Tmp", report=self.report_file, output=self.output_file, log=self.log_file)
             except Exception as e:
                 if str(e) == "HTTP error: 404":
                     self.oc_client.mkdir(process_id)
