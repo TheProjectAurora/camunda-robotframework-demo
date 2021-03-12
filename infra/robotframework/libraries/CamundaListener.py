@@ -92,7 +92,7 @@ class CamundaListener:
 
     def _get_process_id(self):
         try:
-            r = requests.get(url = self.engine+"/external-task/"self.task_id)
+            r = requests.get(url = self.engine+"/external-task/"+self.task_id)
             r.raise_for_status()
             for t in r.json():
                 if t["processInstanceId"]:
