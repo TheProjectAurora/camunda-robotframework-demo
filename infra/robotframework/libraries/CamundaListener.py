@@ -103,21 +103,21 @@ class CamundaListener:
             logger.error(f"Could not get process id: {e}")
 
     def _upload_results(self):
-    try:
-        process_id = self._get_process_id()
         try:
-            self.oc_client.list(process_id+"/")
-            self.oc_client.get_file(process_id+"/output.xml","o.xml")
-            rebot("o.xml", self.output_file, report=self.report_file, output=self.output_file, log=self.log_file)
+            process_id = self._get_process_id()
+            try:
+                self.oc_client.list(process_id+"/")
+                self.oc_client.get_file(process_id+"/output.xml","o.xml")
+                rebot("o.xml", self.output_file, report=self.report_file, output=self.output_file, log=self.log_file)
+            except Exception as e:
+                if str(e) == "HTTP error: 404":
+                    self.oc_client.mkdir(process_id)
+                    pass
+                else:
+                    raise Exception(f"Error:{e}")
+            self.oc_client.put_file(process_id+"/log.html", self.log_file)
+            self.oc_client.put_file(process_id+"/output.xml", self.output_file)
+            self.oc_client.put_file(process_id+"/report.html", self.report_file)
         except Exception as e:
-            if str(e) == "HTTP error: 404":
-                self.oc_client.mkdir(process_id)
-                pass
-            else:
-                raise Exception(f"Error:{e}")
-        self.oc_client.put_file(process_id+"/log.html", self.log_file)
-        self.oc_client.put_file(process_id+"/output.xml", self.output_file)
-        self.oc_client.put_file(process_id+"/report.html", self.report_file)
-    except Exception as e:
-        logger.error(f"Could not send fail task to engine: {e}")
-    return self.oc_client.share_file_with_link(process_id)
+            logger.error(f"Could not send fail task to engine: {e}")
+        return self.oc_client.share_file_with_link(process_id)
