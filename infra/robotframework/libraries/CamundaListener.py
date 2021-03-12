@@ -62,7 +62,7 @@ class CamundaListener:
             "workerId" : self.worker_id,
             "variables" : {
             self.variable : {"value" : self.value, "type": "String"},
-            "robot_results" : {"value" : robot_results_url, "type": "String"}}
+            "robot_results" : {"value" : str(robot_results_url), "type": "String"}}
             }
             r = requests.post(url, json=payload, headers=headers, verify=False)
             r.raise_for_status()
