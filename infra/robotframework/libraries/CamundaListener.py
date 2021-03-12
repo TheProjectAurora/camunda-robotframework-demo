@@ -95,7 +95,7 @@ class CamundaListener:
             r = requests.get(url = self.engine+"/external-task/"+self.task_id)
             r.raise_for_status()
             if r.json()["processInstanceId"]:
-                return t["processInstanceId"]
+                return r.json()["processInstanceId"]
             else:
                 raise NotFound(f"Process id not found")
         except Exception as e:
