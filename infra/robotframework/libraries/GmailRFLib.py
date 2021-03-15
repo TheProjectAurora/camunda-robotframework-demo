@@ -1,5 +1,6 @@
 from googleapiclient.discovery import build
 from oauth2client import file, client, tools
+from google.oauth2.credentials import Credentials
 from httplib2 import Http
 from email.mime.text import MIMEText
 from apiclient import errors, discovery
@@ -11,11 +12,10 @@ import sys
 
 class GmailRFLib:
     ROBOT_LIBRARY_SCOPE = "GLOBAL"
-    SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
-    def __init__(self,token=None,creds=None):
+    def __init__(self,token=None):
         try:
-            creds = Credentials.from_authorized_user_file("/app/credentials/token.json", SCOPES)
+            creds = Credentials.from_authorized_user_file("/app/credentials/token.json", ["https://www.googleapis.com/auth/gmail.modify"])
             self.service = build("gmail", "v1", credentials=creds)
         except Exception as e:
             logging.exception(f"Error when initializing service:{e}")
