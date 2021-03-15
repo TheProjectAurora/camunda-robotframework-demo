@@ -1,5 +1,3 @@
-from googleapiclient.discovery import build
-from oauth2client import file, client, tools
 from google.oauth2.credentials import Credentials
 from httplib2 import Http
 from email.mime.text import MIMEText
