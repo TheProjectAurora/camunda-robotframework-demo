@@ -3,6 +3,7 @@ from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot import rebot
 import owncloud
+import random
 
 """Camunda listener takes care of task status update to engine
 """
@@ -113,6 +114,8 @@ class CamundaListener:
 
     def _upload_results(self):
         try:
+            #TODO: compine results from diferent folders
+            time.sleep(random.randint(1, 5))
             process_id = self._get_process_id()
             try:
                 self.oc_client.list(process_id+"/")
