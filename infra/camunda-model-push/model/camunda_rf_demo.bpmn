@@ -90,7 +90,7 @@
     <bpmn:sequenceFlow id="Flow_0vghlh6" sourceRef="Gateway_0wflojn" targetRef="Gateway_1k6aovr" />
     <bpmn:sequenceFlow id="Flow_0570y0j" sourceRef="Activity_1xnatqu" targetRef="Gateway_162fjw2" />
     <bpmn:sequenceFlow id="Flow_1c6rq82" name="Yes" sourceRef="Gateway_162fjw2" targetRef="robot_task3">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{approved}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{ok}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0dzm4b2" name="No" sourceRef="Gateway_162fjw2" targetRef="Event_1ls5vs5" />
   </bpmn:process>

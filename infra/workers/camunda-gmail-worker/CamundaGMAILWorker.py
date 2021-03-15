@@ -8,7 +8,7 @@ import libraries.GmailLib as g
 class CamundaGMAILWorker:
 
     def __init__(self,camunda_url,poll_interval=5):
-        self.subject_to_look = "camunda search"
+        self.subject_to_look = "search"
         self.msg_start_search = "start_search_process"
         self.engine = camunda_url+"/engine-rest"
         self.poll_interval = poll_interval
