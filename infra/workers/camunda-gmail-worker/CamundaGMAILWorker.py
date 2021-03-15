@@ -43,7 +43,8 @@ class CamundaGMAILWorker:
             "subject" : {"value" : self.subject, "type": "String"},
             "search_term" : {"value" : self.search_term, "type": "String"},
             "result_duck" : {"value" : None, "type": "String"},
-            "result_bing" : {"value" : None, "type": "String"}}
+            "result_bing" : {"value" : None, "type": "String"},
+            "result_cows" : {"value" : None, "type": "String"}}
             }
         try:
             r = requests.post(url, json=payload, headers=headers, verify=False)
