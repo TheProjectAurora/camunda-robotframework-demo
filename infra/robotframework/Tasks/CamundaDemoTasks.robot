@@ -24,6 +24,16 @@ Search with DuckDuckGo
     ${link_text}  Get text  xpath=//h2/a
     Set process variable  result_duck  ${link_text}
 
+Search with Swisscows
+    [Tags]    search_cows
+    [Setup]  Init Browser
+    New page  https://swisscows.com/
+    Type text  xpath=//*[@class='input-search']  ${VARS['search_term']}  delay=50 ms
+    Click  xpath=//*[@class='search-submit']
+    Wait for elements state  xpath=//*[@class='web-results']
+    ${link_text}  Get text  xpath=//*[@class='item item--web']/a/h2
+    Set process variable  result_cows  ${link_text}
+
 Send Search Result Email
     [Tags]    send_results
     Send results email

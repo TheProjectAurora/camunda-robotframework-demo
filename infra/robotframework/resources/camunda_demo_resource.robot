@@ -10,8 +10,8 @@ Init Browser
     New context
 
 Send Results Email
-    Send camunda search email  ${VARS['sender']}  Camunda search results for ${VARS['search_term']}
-    ...    ${VARS['result_bing']}  ${VARS['result_duck']}
+    Send results search email  ${VARS['sender']}  Search results for ${VARS['search_term']}
+    ...    ${VARS['result_bing']}  ${VARS['result_duck']}  ${VARS['result_cows']}
     Set Process Variable  results_sent  true
 
 Fetch Task
