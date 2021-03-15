@@ -24,11 +24,12 @@ class GmailRFLib:
             logging.exception(f"Error when initializing service:{e}")
 
     @keyword
-    def send_camunda_search_email(self, to, subject, result_bing, result_duck):
+    def send_results_search_email(self, to, subject, result_bing, result_duck, result_cows):
         try:
             message_text ="""
             <p> Bing: {bing}</p>
-            <p> DuckDuckGo: {duck}</p><br/>""".format(bing=result_bing,duck=result_duck)
+            <p> DuckDuckGo: {duck}</p>
+            <p> Swisscows: {cows}</p><br/>""".format(bing=result_bing,duck=result_duck,cows=result_cows)
             message = self._create_message(to, subject, message_text)
             r = self.service.users().messages().send(userId="me", body=message).execute()
             logging.info(f"Email sent: {r}")

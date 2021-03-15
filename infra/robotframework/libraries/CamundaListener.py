@@ -117,8 +117,8 @@ class CamundaListener:
             try:
                 self.oc_client.list(process_id+"/")
                 self.oc_client.get_file(process_id+"/output.xml","o.xml")
-                rebot("o.xml", self.output_file, merge=True, rpa=True, doc=f"Task results for process id:{process_id}",
-                    reporttitle=f"{process_id} Report", name=".", report=self.report_file, output=self.output_file, log=self.log_file)
+                rebot("o.xml", self.output_file, merge=True, rpa=True, doc=f"Task results for process instance {process_id}",
+                    reporttitle=f"{process_id} Task Report", name=".", report=self.report_file, output=self.output_file, log=self.log_file)
             except Exception as e:
                 if str(e) == "HTTP error: 404":
                     self.oc_client.mkdir(process_id)
