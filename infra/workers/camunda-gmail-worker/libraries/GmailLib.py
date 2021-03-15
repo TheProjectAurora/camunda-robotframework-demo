@@ -3,6 +3,7 @@ from oauth2client import file, client, tools
 from httplib2 import Http
 from email.mime.text import MIMEText
 from apiclient import errors, discovery
+from google.oauth2.credentials import Credentials
 import base64
 import sys
 
@@ -13,11 +14,8 @@ class GmailLib:
 
     def __init__(self,token=None,creds=None):
         try:
-            creds = file.Storage("/app/credentials/token.json").get()
-            if not creds or creds.invalid:
-                flow = client.flow_from_clientsecrets("/app/credentials/credentials.json", SCOPES)
-                creds = tools.run_flow(flow, store)
-            self.service = build("gmail", "v1", http=creds.authorize(Http()))
+            creds = Credentials.from_authorized_user_file("/app/credentials/token.json", SCOPES)
+            self.service = build("gmail", "v1", credentials=creds)
         except Exception as e:
             print(f"Error when initializing service:{e}")
             sys.exit(1)
