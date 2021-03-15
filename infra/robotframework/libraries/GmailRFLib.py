@@ -1,7 +1,8 @@
+from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from httplib2 import Http
 from email.mime.text import MIMEText
-from apiclient import errors, discovery
+from apiclient import errors
 from robot.api.deco import keyword
 import logging
 import base64
