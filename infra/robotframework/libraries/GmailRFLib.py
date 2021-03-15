@@ -13,7 +13,7 @@ class GmailRFLib:
 
     def __init__(self,token=None):
         try:
-            creds = Credentials.from_authorized_user_file("/app/credentials/token.json", ["https://www.googleapis.com/auth/gmail.modify"])
+            creds = Credentials.from_authorized_user_file("/credentials/token.json", ["https://www.googleapis.com/auth/gmail.modify"])
             self.service = build("gmail", "v1", credentials=creds)
         except Exception as e:
             logging.exception(f"Error when initializing service:{e}")
