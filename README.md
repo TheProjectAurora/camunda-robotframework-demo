@@ -1,3 +1,4 @@
+![Camunda Cockpit](./pictures/cockpit.jpg)
 # Spin up
 - Add google mail credentials to place: https://github.com/TheProjectAurora/camunda-robotframework-demo/tree/main/credentials
 - Unix socker privialedges so host docker coulbe utilized from container: ```chmod 777 /var/run/docker.sock```
