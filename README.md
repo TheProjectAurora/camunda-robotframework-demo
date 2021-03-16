@@ -1,4 +1,10 @@
+# Camunda RF Demo
 ![Camunda Cockpit](./pictures/cockpit.jpg)
+- Process polls inbox and when email with subject "search" is found, sends start message to camunda engine
+- Search engine robot tasks are started in parallel in different containers
+- If search engine tasks got equal results, process needs manual approvement before sending results mail
+- Finally results email is sent back to sender
+
 # Spin up
 - Add google mail credentials to place: https://github.com/TheProjectAurora/camunda-robotframework-demo/tree/main/credentials
 - Unix socker privialedges so host docker coulbe utilized from container: ```chmod 777 /var/run/docker.sock```
