@@ -18,4 +18,10 @@
 - Note: Copy-Paste works only by using noVNC clipboard menu left side of novnc view
 - Open System tools => LXTerminal and execute: ```camunda-modeler ./model/camunda_rf_demo.bpmn```
 - After model chance push it to camunda by execute:  ```sudo docker start camunda-robotframework-demo_camunda-modeler-push_1```
-- Camunda is visible in novnc by starting browser Internet => Chrome/Firefox and go to by using user=demo pw=demo : http://camunda:8080/camunda 
+- Camunda is visible in novnc by starting browser Internet => Chrome/Firefox and go to by using user=demo pw=demo : http://camunda:8080/camunda
+
+# Robot framework results
+![Owncloud](./pictures/owncloud.jpg)
+- Report can be found in owncloud http://localhost (in novnc use: http://owncloud). Login user=demo pw=demo
+- Each process instance has its own folder with merged tasks reports
+- Link to each process instance report can be found from cockpit process history tab under variables "Task report"
