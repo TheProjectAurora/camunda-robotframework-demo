@@ -115,10 +115,10 @@ class CamundaListener:
 
     def _upload_results(self):
         try:
-            #TODO: compine results from diferent folders
-            time.sleep(random.randint(1, 5))
             process_id = self._get_process_id()
             try:
+                #TODO: merge results from different folders
+                time.sleep(random.randint(1, 3))
                 self.oc_client.list(process_id+"/")
                 self.oc_client.get_file(process_id+"/output.xml","o.xml")
                 rebot("o.xml", self.output_file, merge=True, rpa=True, doc=f"Task results for process instance {process_id}",
