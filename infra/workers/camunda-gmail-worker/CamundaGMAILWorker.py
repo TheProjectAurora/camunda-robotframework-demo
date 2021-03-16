@@ -60,9 +60,9 @@ class CamundaGMAILWorker:
         """
         headers=msg["payload"]["headers"]
         subject = [i["value"] for i in headers if i["name"]=="Subject"][0]
-        sender = [i["value"] for i in headers if i["name"]=="From"]
-        email = re.search(r"(?<=<).*?(?=>)", sender[0]).group(0)
         if self.subject_to_look in subject:
+            sender = [i["value"] for i in headers if i["name"]=="From"]
+            email = re.search(r"(?<=<).*?(?=>)", sender[0]).group(0)
             self.search_term = msg["snippet"]
             self.subject = subject
             self.sender_email = email
