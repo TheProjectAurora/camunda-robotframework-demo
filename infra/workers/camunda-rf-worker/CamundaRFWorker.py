@@ -20,7 +20,7 @@ class CamundaRFWorker:
         self.creds_volume_mount = ["camunda-robotframework-demo_credentials:/credentials"]
         self.git_repo_param = "git_repo"
         self.git_hub_url = "https://github.com/"
-        self.git_branch = "new_gmail_creds_init"
+        self.git_branch = "main"
         self.poll_interval = poll_interval
 
     def _start_robot_framework_container(self,topic,task_id):
