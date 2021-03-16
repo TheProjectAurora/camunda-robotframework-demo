@@ -1,7 +1,8 @@
 # Camunda RF Demo
 ![Camunda Cockpit](./pictures/cockpit.jpg)
-- Process polls inbox and when email with subject "search" is found, sends start message to camunda engine
-- Search engine robot tasks are started in parallel in different containers
+Process uses different search engines to find result for given search term
+- Polls inbox and when email with subject "search" is found, sends message to camunda with search term (email body)
+- Search engine robot tasks are started in parallel in separate containers
 - If search engine tasks got equal results, process needs manual approvement before sending results mail
 - Finally results email is sent back to sender
 
