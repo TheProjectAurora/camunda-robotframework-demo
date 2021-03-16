@@ -18,6 +18,7 @@
 - Remove all container images ```docker image rm IMAGENAME``` that start by: camunda-robotframework-demo_*
 
 # novnc-camunda-modeler usage
+![Camunda Modeler](./pictures/modeler.jpg)
 - By default novnc-camunda-modeler is not started. Execute ```docker-compose scale novnc-with-modeler=1``` to start it.
 - https://localhost should answer
 - Login user=coder pw=coderpw
@@ -25,6 +26,9 @@
 - Open System tools => LXTerminal and execute: ```camunda-modeler ./model/camunda_rf_demo.bpmn```
 - After model chance push it to camunda by execute:  ```sudo docker start camunda-robotframework-demo_camunda-modeler-push_1```
 - Camunda is visible in novnc by starting browser Internet => Chrome/Firefox and go to by using user=demo pw=demo : http://camunda:8080/camunda
+
+# Camunda modeler
+
 
 # Robot framework results
 ![Owncloud](./pictures/owncloud.jpg)
