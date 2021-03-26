@@ -1,0 +1,11 @@
+ #!/bin/sh
+SUBJECT=${1}
+BODY=${2}
+
+mhsendmail camunda@mailhog.local <<EOF
+From: SenderUser <user@mailhog.local>
+To: Camunda <camunda@mailhog.local>
+Subject: ${SUBJECT}
+
+${BODY}
+EOF

@@ -1,16 +1,17 @@
 # Camunda RF Demo
 ![Camunda Cockpit](./pictures/cockpit.jpg)
 Process uses different search engines to find result for given search term
-- Polls inbox and when email with subject "search" is found, sends message to camunda with search term (email body)
+- Polls http://localhost:8025 inbox and when email with subject "search" is found, sends message to camunda with search term (email body)
 - Search engine robot tasks are started in parallel in separate containers
 - If search engine tasks got equal results, process needs manual approvement before sending results mail
-- Finally results email is sent back to sender
+- Finally results email is sent back to sender visible in http://localhost:8025
 
 # Spin up
-- Add google mail credentials to place: https://github.com/TheProjectAurora/camunda-robotframework-demo/tree/main/credentials
 - Unix socker privialedges so host docker coulbe utilized from container: ```chmod 777 /var/run/docker.sock```
 - Execute: ```docker-compose up -d```
 - Camunda should start answer by using user=demo pw=demo : http://localhost:8080/camunda
+- WebMail should start answer: http://localhost:8025
+- Sending a mail start model: ```docker exec -it camunda-robotframework-demo_mailhog_1 sh -c "send search searchword```7
 - If demo not work ok then empty your browser cache and reload page
 # Shut down
 - Execute: ```docker-compose down```

@@ -8,6 +8,16 @@ services:
     ports:
       - 8080:8080
   
+  mailhog:
+    build:
+      context: ./infra/mailhog
+      dockerfile: Dockerfile
+    environment:
+      - MH_HOSTNAME=bot.ti
+    ports:
+      - 1025:1025
+      - 8025:8025
+
   camunda-gmail-worker:
     environment:
       - PYTHONUNBUFFERED=1
