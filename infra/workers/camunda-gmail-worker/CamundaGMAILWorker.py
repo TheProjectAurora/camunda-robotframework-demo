@@ -11,7 +11,7 @@ class CamundaGMAILWorker:
         self.msg_start_search = "start_search_process"
         self.engine = camunda_url+"/engine-rest"
         self.poll_interval = poll_interval
-        self.mailhog_url = "http://localhost:8025"
+        self.mailhog_url = "http://mailhog:8025"
 
     def poll_inbox_and_send_message_to_camunda(self):
         """
@@ -20,11 +20,13 @@ class CamundaGMAILWorker:
         """
         try:
             messages = requests.get(self.mailhog_url+"/api/v1/messages", verify=False)
+            msg_count = len(messages.json())
+            print(f"{msg_count} message(s) found from mailbox",flush=True)
             for msg in messages.json():
                 email_valid = self._check_email_subject(msg)
                 if email_valid:
                     self._send_message_to_engine_start_search()
-                    self.requests.delete(self.mailhog_url+"/api/v1/messages/"+msg["ID"], verify=False)
+                    requests.delete(self.mailhog_url+"/api/v1/messages/"+msg["ID"], verify=False)
         except Exception as e:
             print(f"Error when checking inbox messages:{e}")
 
