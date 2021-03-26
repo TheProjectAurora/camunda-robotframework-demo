@@ -3,7 +3,6 @@ import requests
 import sys
 import json
 import time
-import libraries.GmailLib as g
 
 class CamundaGMAILWorker:
 
@@ -12,7 +11,7 @@ class CamundaGMAILWorker:
         self.msg_start_search = "start_search_process"
         self.engine = camunda_url+"/engine-rest"
         self.poll_interval = poll_interval
-        self.gmail = g.GmailLib()
+        self.mailhog_url = "http://localhost:8025"
 
     def poll_inbox_and_send_message_to_camunda(self):
         """
@@ -20,13 +19,12 @@ class CamundaGMAILWorker:
         start process and marks email as read.
         """
         try:
-            messages = self.gmail.fetch_unread_messages()
-            for msg in messages:
-                msg = self.gmail.get_message(msg["id"])
+            messages = requests.get(self.mailhog_url+"/api/v1/messages", verify=False)
+            for msg in messages.json():
                 email_valid = self._check_email_subject(msg)
                 if email_valid:
                     self._send_message_to_engine_start_search()
-                    self.gmail.mark_email_as_read(msg["id"])
+                    self.requests.delete(self.mailhog_url+"/api/v1/messages/"+msg["ID"], verify=False)
         except Exception as e:
             print(f"Error when checking inbox messages:{e}")
 
@@ -39,7 +37,6 @@ class CamundaGMAILWorker:
         payload = {
             "messageName" : self.msg_start_search,
             "processVariables" : {
-            "sender" : {"value" : self.sender_email, "type": "String"},
             "subject" : {"value" : self.subject, "type": "String"},
             "search_term" : {"value" : self.search_term, "type": "String"},
             "result_duck" : {"value" : None, "type": "String"},
@@ -58,14 +55,10 @@ class CamundaGMAILWorker:
         Checks message if the criterias are met. If so, 
         sets process variables and returns true
         """
-        headers=msg["payload"]["headers"]
-        subject = [i["value"] for i in headers if i["name"]=="Subject"][0]
+        subject = msg["Content"]["Headers"]["Subject"]
         if self.subject_to_look in subject:
-            sender = [i["value"] for i in headers if i["name"]=="From"]
-            email = re.search(r"(?<=<).*?(?=>)", sender[0]).group(0)
-            self.search_term = msg["snippet"]
+            self.search_term = msg["Content"]["Body"]
             self.subject = subject
-            self.sender_email = email
             print(f"Got {self.subject_to_look}! Search term: {self.search_term}")
             return True
         return False

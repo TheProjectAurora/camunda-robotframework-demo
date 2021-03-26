@@ -1,6 +1,5 @@
 FROM python:3-alpine
 RUN mkdir -p /app
-COPY ./libraries /app/libraries
 COPY ./CamundaGMAILWorker.py /app
 COPY ./requirements.txt /tmp
 RUN set -xe && \
