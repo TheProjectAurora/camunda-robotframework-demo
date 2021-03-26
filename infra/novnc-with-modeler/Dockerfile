@@ -40,11 +40,13 @@ USER root
 #####
 # INSTALL: https://camunda.com/download/modeler/
 RUN set -xe \
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    &&  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list \
     && apt -qq update \
     && apt install -qq --no-install-recommends --allow-unauthenticated -y \
       python3 \
       python3-pip \
-      docker.io \
+      docker-ce-cli \
     && apt clean && rm -rf /var/lib/apt/lists/* \
     && cd / \
     && wget -O camunda-modeler-linux-x64.tar.gz https://downloads.camunda.cloud/release/camunda-modeler/4.6.0/camunda-modeler-4.6.0-linux-x64.tar.gz \
