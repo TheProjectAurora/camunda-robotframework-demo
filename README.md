@@ -11,7 +11,7 @@ Process uses different search engines to find result for given search term
 - Execute: ```docker-compose up -d```
 - Camunda should start answer by using user=demo pw=demo : http://localhost:8080/camunda
 - WebMail should start answer: http://localhost:8025
-- Sending a mail start model: ```docker exec camunda-robotframework-demo_mailhog_1 send search searchword```
+- Sending a mail that start a model: ```./start-mail-client```
 - If demo not work ok then empty your browser cache and reload page
 # Shut down
 - Execute: ```docker-compose down```
