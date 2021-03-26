@@ -1,0 +1,2 @@
+#!/bin/sh
+docker exec -it camunda-robotframework-demo_mailhog_1 send

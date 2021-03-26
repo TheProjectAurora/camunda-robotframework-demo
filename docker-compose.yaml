@@ -16,14 +16,14 @@ services:
       - 1025:1025
       - 8025:8025
 
-  camunda-gmail-worker:
+  camunda-mail-worker:
     environment:
       - PYTHONUNBUFFERED=1
     build:
-      context: ./infra/workers/camunda-gmail-worker
+      context: ./infra/workers/camunda-mail-worker
       dockerfile: Dockerfile
     entrypoint: ["/usr/local/bin/python"]
-    command: ["/app/CamundaGMAILWorker.py", "http://camunda:8080"]
+    command: ["/app/CamundaMAILWorker.py", "http://camunda:8080"]
 
   camunda-rf-worker:
     environment:

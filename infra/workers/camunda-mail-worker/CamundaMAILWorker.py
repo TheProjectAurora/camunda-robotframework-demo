@@ -4,7 +4,7 @@ import sys
 import json
 import time
 
-class CamundaGMAILWorker:
+class CamundaMAILWorker:
 
     def __init__(self,camunda_url,poll_interval=5):
         self.subject_to_look = "search"
@@ -15,7 +15,7 @@ class CamundaGMAILWorker:
 
     def poll_inbox_and_send_message_to_camunda(self):
         """
-        Polls gmail inbox for new messages. If criterias are met, sends message to camunda engine to
+        Polls mail inbox for new messages. If criterias are met, sends message to camunda engine to
         start process and marks email as read.
         """
         try:
@@ -67,7 +67,7 @@ class CamundaGMAILWorker:
 
 if __name__ == "__main__":
     if len(sys.argv) != 1:
-        t = CamundaGMAILWorker(sys.argv[1])
+        t = CamundaMAILWorker(sys.argv[1])
         while True:
             t.poll_inbox_and_send_message_to_camunda()
             time.sleep(t.poll_interval)

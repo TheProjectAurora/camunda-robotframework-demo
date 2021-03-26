@@ -1,12 +1,17 @@
 #!/bin/sh
-SUBJECT=${1}
-shift
-BODY=${@}
+
+echo "Hello, I am your friendly mail client."
+echo "I will send mail to: camunda@mailhog.local"
+echo "Mail subject will be: search"
+echo "Write your search term that will be searched with different search engines?"
+read BODY
 
 mhsendmail camunda@mailhog.local <<EOF
 From: SenderUser <user@mailhog.local>
 To: Camunda <camunda@mailhog.local>
-Subject: ${SUBJECT}
+Subject: search
 
 ${BODY}
 EOF
+
+echo "MAIL SENDED to: camunda@mailhog.local"
