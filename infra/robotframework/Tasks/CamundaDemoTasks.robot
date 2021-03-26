@@ -37,3 +37,8 @@ Search with Swisscows
 Send Search Result Email
     [Tags]    send_results
     Send results email
+
+
+Send User Task to User
+    [Tags]    send_error
+    Send error result email
