@@ -1,6 +1,7 @@
- #!/bin/sh
+#!/bin/sh
 SUBJECT=${1}
-BODY=${2}
+shift
+BODY=${@}
 
 mhsendmail camunda@mailhog.local <<EOF
 From: SenderUser <user@mailhog.local>

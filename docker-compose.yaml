@@ -12,8 +12,6 @@ services:
     build:
       context: ./infra/mailhog
       dockerfile: Dockerfile
-    environment:
-      - MH_HOSTNAME=bot.ti
     ports:
       - 1025:1025
       - 8025:8025
