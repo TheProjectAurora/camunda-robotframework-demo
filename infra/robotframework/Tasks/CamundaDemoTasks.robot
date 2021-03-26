@@ -6,6 +6,7 @@ Suite Setup  Fetch Task  ${TOPIC}
 Search with Bing
     [Tags]    search_bing
     [Setup]  Init Browser
+    [Teardown]  Fail Task Randomly
     New page  http://www.bing.fi
     Type text  id=sb_form_q  ${VARS['search_term']}  delay=50 ms
     Click  xpath=//*[contains(@class, 'search')]

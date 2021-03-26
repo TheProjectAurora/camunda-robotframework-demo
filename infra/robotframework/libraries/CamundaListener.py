@@ -43,6 +43,8 @@ class CamundaListener:
             report_url = self._upload_results()
             if self.test_status:
                 self._complete_task(report_url)
+            elif "Bpmn Error" in self.test_message:
+                self._raise_bpmn_error(report_url,report_url)
             else:
                 self._fail_task()
         except Exception as e:
@@ -81,12 +83,11 @@ class CamundaListener:
         Sends task failed to engine
         """
         try:
-            error_message = str(self.test_message)
             url = self.engine+"/external-task/"+self.task_id+"/failure"
             headers = {"Content-type": "application/json"}
             payload = {
             "workerId" : self.worker_id,
-            "errorMessage" : error_message,
+            "errorMessage" : self.test_message,
             "retries" : 2,
             "retryTimeout": 60000
             }
@@ -95,6 +96,27 @@ class CamundaListener:
             logger.error(f"{self.task_id} fail: {error_message}")
         except Exception as e:
             logger.error(f"Could not send fail task to engine: {e}")
+
+        def _raise_bpmn_error(self, robot_results_url):
+        """
+        Sends bpmn error to engine
+        """
+        try:
+            url = self.engine+"/external-task/"+self.task_id+"/bpmnError"
+            headers = {"Content-type": "application/json"}
+            payload = {
+            "workerId" : self.worker_id,
+            "errorCode": "bpmn-error",
+            "errorMessage" : self.test_message,
+            "variables" : {
+            self.variable : {"value" : self.value, "type": "String"},
+            "Task report" : {"value" : robot_results_url, "type": "String"}}
+            }
+            r = requests.post(url, json=payload, headers=headers, verify=False)
+            r.raise_for_status()
+            logger.error(f"{self.task_id} fail: {error_message}")
+        except Exception as e:
+            logger.error(f"Could not send bpmn error to engine: {e}")
 
     def _set_task_completed_variables(self):
         self.result_set = BuiltIn().get_variable_value("${RETURN}")

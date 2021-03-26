@@ -2,7 +2,7 @@
 Library  CamundaLibrary  ${CAMUNDA_HOST}
 Library  Browser
 Library  Collections
-Library  ..${/}libraries${/}GmailRFLib.py
+Library  String
 
 *** Keywords ***
 Init Browser
@@ -10,7 +10,7 @@ Init Browser
     New context
 
 Send Results Email
-    Send results search email  ${VARS['sender']}  Search results for ${VARS['search_term']}
+    Send results search email  Search results for ${VARS['search_term']}
     ...    ${VARS['result_bing']}  ${VARS['result_duck']}  ${VARS['result_cows']}
     Set Process Variable  results_sent  true
 
@@ -27,3 +27,7 @@ Fetch Task
 Set Process Variable
     [Arguments]  ${key}  ${value}
     Set to dictionary  ${RETURN}  ${key}=${value}
+
+Fail Task Randomly
+    ${random}  Generate random string  1  [NUMBERS]
+    Run keyword if  ${random} == 8  FAIL  Random Fail Happened!
