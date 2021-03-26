@@ -1,5 +1,4 @@
-credentials.json
-token.json  
+credentials
 *.pyc
 **/__pycache__
 tmp/
