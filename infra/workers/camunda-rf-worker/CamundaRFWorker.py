@@ -17,7 +17,6 @@ class CamundaRFWorker:
         self.container_network = "camunda-robotframework-demo_default"
         self.robot_python_path = "./infra/robotframework/libraries/"
         self.robot_listener = "CamundaListener"
-        self.creds_volume_mount = ["camunda-robotframework-demo_credentials:/credentials"]
         self.git_repo_param = "git_repo"
         self.git_hub_url = "https://github.com/"
         self.git_branch = "main"
@@ -33,7 +32,7 @@ class CamundaRFWorker:
             git_clone_cmd = f"cd /tmp && git clone -b {self.git_branch} {self.git_hub_url}{git_repo}"
             robot_cmd = f"robot --pythonpath {self.robot_python_path} --listener {self.robot_listener}\;{self.camunda_url} -N . -d /tmp -i {topic} -v TOPIC:{topic} -v CAMUNDA_HOST:{self.camunda_url} /tmp"
             entry_point =["/bin/sh", "-c", f"{git_clone_cmd} && cd /tmp/{self.project_name} && {robot_cmd}"]
-            self.docker_client.containers.run(self.robot_container, network=self.container_network, volumes=self.creds_volume_mount, entrypoint=entry_point, detach=True, auto_remove=True)
+            self.docker_client.containers.run(self.robot_container, network=self.container_network, entrypoint=entry_point, detach=True, auto_remove=True)
         except Exception as e:
             print(f"Could not complete robot framework task: {e}")
 
